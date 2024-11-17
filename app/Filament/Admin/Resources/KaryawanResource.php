@@ -84,7 +84,8 @@ class KaryawanResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('nik')
-                    ->searchable(),
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('nama')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('tanggal_lahir')
@@ -141,9 +142,6 @@ class KaryawanResource extends Resource
                     ->openUrlInNewTab(),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
             ]);
     }
 

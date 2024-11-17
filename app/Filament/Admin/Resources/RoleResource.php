@@ -14,6 +14,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Admin\Resources\RoleResource\Pages;
 use App\Filament\Admin\Resources\RoleResource\RelationManagers;
+use Filament\Forms\Components\Card;
 
 class RoleResource extends Resource
 {
@@ -28,6 +29,8 @@ class RoleResource extends Resource
     {
         return $form
             ->schema([
+                Card::make()
+                ->schema([
                 Forms\Components\TextInput::make('name')
                 ->minLength(2)
                 ->maxLength(50)
@@ -36,7 +39,9 @@ class RoleResource extends Resource
                 Forms\Components\Select::make('permissions')
                 ->relationship('permissions', 'name')->preload()
                 ->multiple(),
-            ]);
+            ])
+        ]);
+
     }
 
     public static function table(Table $table): Table
@@ -51,11 +56,10 @@ class RoleResource extends Resource
             ->actions([
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
+                Tables\Actions\RestoreAction::make(),
+
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
             ]);
     }
 

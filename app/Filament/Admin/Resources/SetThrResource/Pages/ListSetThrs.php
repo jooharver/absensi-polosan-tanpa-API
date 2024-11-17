@@ -13,7 +13,9 @@ class ListSetThrs extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            Actions\CreateAction::make(),
+            Actions\CreateAction::make()
+            ->label('New Set THR')
+            ->icon('heroicon-o-plus'),
         ];
     }
 }

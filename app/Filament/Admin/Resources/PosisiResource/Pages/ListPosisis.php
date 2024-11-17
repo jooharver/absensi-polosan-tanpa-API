@@ -13,7 +13,9 @@ class ListPosisis extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            Actions\CreateAction::make(),
+            Actions\CreateAction::make()
+            ->label('New Posisi')
+            ->icon('heroicon-o-plus'),
         ];
     }
 }

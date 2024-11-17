@@ -13,7 +13,9 @@ class ListKaryawans extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            Actions\CreateAction::make(),
+            Actions\CreateAction::make()
+            ->label('New Karyawan')
+            ->icon('heroicon-o-plus'),
         ];
     }
 }

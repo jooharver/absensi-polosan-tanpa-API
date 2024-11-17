@@ -131,12 +131,9 @@ class AbsensiResource extends Resource
                     ->url(route('absensi.exportPDF'))
                     ->icon('heroicon-o-arrow-down-tray') // Pastikan route ini ada
                     ->openUrlInNewTab(),
+            ])
+            ->bulkActions([
             ]);
-            // ->bulkActions([
-            //     Tables\Actions\BulkActionGroup::make([
-            //         Tables\Actions\DeleteBulkAction::make(),
-            //     ]),
-            // ]);
     }
 
 

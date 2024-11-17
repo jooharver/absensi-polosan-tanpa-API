@@ -89,7 +89,6 @@ class AdminActivityLogResource extends Resource
     {
         return [
             'index' => Pages\ListAdminActivityLogs::route('/'),
-            'create' => Pages\CreateAdminActivityLog::route('/create'),
             'edit' => Pages\EditAdminActivityLog::route('/{record}/edit'),
         ];
     }
