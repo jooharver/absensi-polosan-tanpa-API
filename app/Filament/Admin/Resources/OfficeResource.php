@@ -37,8 +37,10 @@ class OfficeResource extends Resource
                     ->required()
                     ->numeric(),
                 Forms\Components\TextInput::make('radius')
-                    ->required()
-                    ->numeric(),
+                        ->required()
+                        ->numeric()
+                        ->helperText('Masukkan radius dalam satuan meter (m)')
+
             ]);
     }
 
@@ -56,7 +58,10 @@ class OfficeResource extends Resource
                     ->sortable(),
                 Tables\Columns\TextColumn::make('radius')
                     ->numeric()
-                    ->sortable(),
+                    ->sortable()
+                    ->formatStateUsing(function ($state) {
+                        return $state . ' m';
+                    }),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -80,12 +85,6 @@ class OfficeResource extends Resource
     {
         return [
             //
-        ];
-    }
-    public static function getWidgets(): array
-    {
-        return [
-            StatsOverview::class,
         ];
     }
 

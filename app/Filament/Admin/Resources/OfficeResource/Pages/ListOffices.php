@@ -14,7 +14,6 @@ class ListOffices extends ListRecords
     protected function getHeaderWidgets(): array
     {
         return[
-            StatsOverview::class,
         ];
     }
 }
