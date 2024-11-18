@@ -41,5 +41,40 @@ class UserSeeder extends Seeder
             'password' => Hash::make('kontol'), // Menggunakan Hash untuk menyimpan password
             'remember_token' => Str::random(60), // Menggunakan Str untuk generate remember_token
         ]);
+
+        User::create([
+            'name' => 'Budie Arie Setiadi',
+            'email' => 'b@email.com',
+            'password' => Hash::make('budie'), // Menggunakan Hash untuk menyimpan password
+            'remember_token' => Str::random(60), // Menggunakan Str untuk generate remember_token
+        ]);
+
+        User::create([
+            'name' => 'Karina',
+            'email' => 'k@email.com',
+            'password' => Hash::make('karina'), // Menggunakan Hash untuk menyimpan password
+            'remember_token' => Str::random(60), // Menggunakan Str untuk generate remember_token
+        ]);
+
+        User::create([
+            'name' => 'Bjorka',
+            'email' => 'bj@email.com',
+            'password' => Hash::make('bjorka'), // Menggunakan Hash untuk menyimpan password
+            'remember_token' => Str::random(60), // Menggunakan Str untuk generate remember_token
+        ]);
+
+        User::create([
+            'name' => 'Ayu',
+            'email' => 'a@email.com',
+            'password' => Hash::make('ayu'), // Menggunakan Hash untuk menyimpan password
+            'remember_token' => Str::random(60), // Menggunakan Str untuk generate remember_token
+        ]);
+
+        User::create([
+            'name' => 'P. Didy',
+            'email' => 'p@email.com',
+            'password' => Hash::make('ahhh'), // Menggunakan Hash untuk menyimpan password
+            'remember_token' => Str::random(60), // Menggunakan Str untuk generate remember_token
+        ]);
     }
 }

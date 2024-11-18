@@ -25,6 +25,7 @@ class DatabaseSeeder extends Seeder
             AdminActivityLogSeeder::class,
             PermissionsSeeder::class,
             RolesSeeder::class,
+            OfficeSeeder::class,
 
             // RoleSeeder::class,
             // ModelHasRoleSeeder::class,
