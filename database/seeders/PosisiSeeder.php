@@ -16,19 +16,25 @@ class PosisiSeeder extends Seeder
         Posisi::create([
             'posisi' => 'Manager',
             'jam_kerja_per_hari' => '8',
-            'hari_kerja_per_minggu' => '5'
+            'hari_kerja_per_minggu' => '5',
+            'batas_masuk' => '7',
+            'batas_keluar' => '20',
         ]);
 
         Posisi::create([
             'posisi' => 'Admin',
             'jam_kerja_per_hari' => '8',
-            'hari_kerja_per_minggu' => '6'
+            'hari_kerja_per_minggu' => '6',
+            'batas_masuk' => '7',
+            'batas_keluar' => '20',
         ]);
 
         Posisi::create([
             'posisi' => 'Staff IT',
             'jam_kerja_per_hari' => '6',
-            'hari_kerja_per_minggu' => '5'
+            'hari_kerja_per_minggu' => '5',
+            'batas_masuk' => '7',
+            'batas_keluar' => '20',
         ]);
     }
 }

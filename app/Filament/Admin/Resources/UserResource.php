@@ -97,4 +97,9 @@ class UserResource extends Resource
             'edit' => Pages\EditUser::route('/{record}/edit'),
         ];
     }
+
+    // public static function getEloquentQuery(): Builder
+    // {
+    //     return parent::getEloquentQuery()->where('name', '!=', 'Super Admin' , ',' , 'Test');
+    // }
 }

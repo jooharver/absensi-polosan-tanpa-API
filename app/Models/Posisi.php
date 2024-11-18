@@ -11,7 +11,13 @@ class Posisi extends Model
     protected $table = 'posisis';
     protected $primaryKey = 'id_posisi';
 
-    protected $fillable = ['posisi', 'jam_kerja_per_hari', 'hari_kerja_per_minggu'];
+    protected $fillable = [
+        'posisi',
+        'jam_kerja_per_hari',
+        'hari_kerja_per_minggu',
+        'batas_masuk',
+        'batas_keluar'
+    ];
 
     protected static function boot()
     {

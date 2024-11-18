@@ -14,10 +14,13 @@ class UserPolicy
      */
     public function viewAny(User $user)
     {
-        if($user->hasRole('Admin') || $user->hasPermissionTo('View Posts')){
+        if($user->hasPermissionTo('View Posts')){
             return true;
         }
+
         return false;
+
+        // return true;
     }
 
     /**
@@ -37,6 +40,8 @@ class UserPolicy
             return true;
         }
         return false;
+
+         // return true;
     }
 
     /**
@@ -48,6 +53,8 @@ class UserPolicy
             return true;
         }
         return false;
+
+         // return true;
     }
 
     /**
@@ -59,6 +66,8 @@ class UserPolicy
             return true;
         }
         return false;
+
+         // return true;
     }
 
     /**

@@ -15,7 +15,7 @@ class PermissionPolicy
      */
     public function viewAny(User $user)
     {
-        if($user->hasPermissionTo('View Posts')){
+        if($user->hasRole('Super Admin')){
             return true;
         }
         return false;

@@ -8,6 +8,7 @@ use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
 use Illuminate\Support\Facades\Hash;
+
 class DatabaseSeeder extends Seeder
 {
     /**
@@ -22,6 +23,9 @@ class DatabaseSeeder extends Seeder
             AbsensiSeeder::class,
             SetThrSeeder::class,
             AdminActivityLogSeeder::class,
+            PermissionsSeeder::class,
+            RolesSeeder::class,
+
             // RoleSeeder::class,
             // ModelHasRoleSeeder::class,
             // PermissionSeeder::class,
