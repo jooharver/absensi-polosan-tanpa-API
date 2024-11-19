@@ -34,7 +34,7 @@ class Karyawan extends Model
 
     public function users()
     {
-        return $this->belongsTo(User::class, 'user_id', 'id');
+        return $this->hasOne(User::class, 'karyawan_id', 'id_karyawan');
     }
 
     public function absensis()

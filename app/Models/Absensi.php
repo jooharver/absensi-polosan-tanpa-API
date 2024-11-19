@@ -144,11 +144,11 @@ class Absensi extends Model
 
         // Perhitungan THR dilakukan tanpa pengaruh pada log admin activity
         static::saved(function ($absensi) {
-            THR::calculateAndSaveTHR($absensi->karyawan_id);
+            Thr::calculateAndSaveTHR($absensi->karyawan_id);
         });
 
         static::deleted(function ($absensi) {
-            THR::calculateAndSaveTHR($absensi->karyawan_id);
+            Thr::calculateAndSaveTHR($absensi->karyawan_id);
         });
     }
 

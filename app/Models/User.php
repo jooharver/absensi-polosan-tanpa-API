@@ -7,10 +7,11 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Spatie\Permission\Traits\HasRoles;
 use Filament\Panel;
+use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
-    use HasFactory, Notifiable, HasRoles;
+    use HasFactory, Notifiable, HasRoles, HasApiTokens;
 
     /**
      * The attributes that are mass assignable.
@@ -21,6 +22,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'karyawan_id'
     ];
 
     /**
@@ -126,7 +128,7 @@ class User extends Authenticatable
 
     public function karyawans()
     {
-        return $this->hasOne(Karyawan::class, 'user_id', 'id');
+        return $this->belongsTo(Karyawan::class, 'karyawan_id', 'id_karyawan');
     }
 
     // public function canAccessPanel(Panel $panel): bool
