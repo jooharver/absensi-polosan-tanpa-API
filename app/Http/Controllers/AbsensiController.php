@@ -21,6 +21,6 @@ class AbsensiController extends Controller
         $mpdf->WriteHTML($html);
 
         // Unduh file PDF
-        $mpdf->Output('absensi.pdf', 'D');
+        $mpdf->Output('Absensi.pdf', 'D');
     }
 }

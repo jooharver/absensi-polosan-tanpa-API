@@ -20,7 +20,8 @@ class PosisiResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-square-3-stack-3d';
     protected static ?string $navigationLabel = 'Posisi';
-    protected static ?int $navigationSort = 3;
+
+    protected static ?int $navigationSort = 4;
     protected static ?string $navigationGroup = 'Administrasi';
 
 
