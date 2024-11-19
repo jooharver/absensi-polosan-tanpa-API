@@ -39,10 +39,8 @@ class AbsensiResource extends Resource
                 ->default(now()->timezone('Asia/Jakarta')->toDateString()) // sets the default date to today's date in Indonesia
                 ->required()
                 ->label('Tanggal'),
-                Forms\Components\TextInput::make('absen_masuk')
-                ->required(),
-                Forms\Components\TextInput::make('absen_keluar')
-                ->required(),
+                Forms\Components\TextInput::make('absen_masuk'),
+                Forms\Components\TextInput::make('absen_keluar'),
                 Forms\Components\TextInput::make('sakit')
                 ->default('00:00'),
                 Forms\Components\TextInput::make('izin')
