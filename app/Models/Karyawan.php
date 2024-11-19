@@ -24,7 +24,6 @@ class Karyawan extends Model
         'tanggal_masuk',
         'face_vector',
         'posisi_id',
-        'user_id',
     ];
 
     public function posisi()

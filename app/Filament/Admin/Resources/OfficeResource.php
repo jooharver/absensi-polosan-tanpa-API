@@ -20,7 +20,7 @@ class OfficeResource extends Resource
     protected static ?string $model = Office::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-building-office-2';
-    protected static ?int $navigationSort = 4;
+    protected static ?int $navigationSort = 5;
     protected static ?string $navigationGroup = 'Administrasi';
 
     public static function form(Form $form): Form

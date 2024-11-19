@@ -14,7 +14,12 @@ class RekapAbsensiResource extends Resource
 {
     protected static ?string $model = RekapAbsensiView::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-document-text';
+    protected static ?string $navigationLabel = 'Rekap Absensi';
+
+    protected static ?int $navigationSort = 3;
+
+    protected static ?string $navigationGroup = 'Administrasi';
 
     public static function table(Table $table): Table
     {
@@ -42,6 +47,19 @@ class RekapAbsensiResource extends Resource
             ])
             ->actions([
                 //
+            ])
+            ->headerActions([
+                Tables\Actions\Action::make('Export Excel')
+                    ->label('Export Excel')
+                    ->url(route('export-rekap'))
+                    ->icon('heroicon-o-arrow-down-tray')
+                    ->openUrlInNewTab(),
+                // Mengubah ekspor PDF menjadi action yang memanggil controller
+                Tables\Actions\Action::make('Export PDF')
+                    ->label('Export PDF')
+                    ->url(route('rekap.exportPDF'))
+                    ->icon('heroicon-o-arrow-down-tray')
+                    ->openUrlInNewTab(),
             ]);
     }
 

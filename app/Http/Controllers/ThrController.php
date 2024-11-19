@@ -29,6 +29,6 @@ class ThrController extends Controller
         $mpdf->WriteHTML($html);
 
         // Unduh file PDF
-        $mpdf->Output('thr_.pdf', 'D');
+        $mpdf->Output('Thr.pdf', 'D');
     }
 }
