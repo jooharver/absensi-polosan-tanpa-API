@@ -46,6 +46,7 @@ class UserSeeder extends Seeder
             'name' => 'Budie Arie Setiadi',
             'email' => 'b@email.com',
             'password' => Hash::make('budie'), // Menggunakan Hash untuk menyimpan password
+            'karyawan_id' => '1',
             'remember_token' => Str::random(60), // Menggunakan Str untuk generate remember_token
         ]);
 
@@ -53,6 +54,7 @@ class UserSeeder extends Seeder
             'name' => 'Karina',
             'email' => 'k@email.com',
             'password' => Hash::make('karina'), // Menggunakan Hash untuk menyimpan password
+            'karyawan_id' => '3',
             'remember_token' => Str::random(60), // Menggunakan Str untuk generate remember_token
         ]);
 
@@ -74,6 +76,7 @@ class UserSeeder extends Seeder
             'name' => 'P. Didy',
             'email' => 'p@email.com',
             'password' => Hash::make('ahhh'), // Menggunakan Hash untuk menyimpan password
+            'karyawan_id' => '5',
             'remember_token' => Str::random(60), // Menggunakan Str untuk generate remember_token
         ]);
     }
