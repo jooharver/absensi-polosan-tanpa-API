@@ -41,7 +41,7 @@ class UserPolicy
         }
         return false;
 
-         // return true;
+        //  return true;
     }
 
     /**
@@ -54,7 +54,7 @@ class UserPolicy
         }
         return false;
 
-         // return true;
+        //  return true;
     }
 
     /**
@@ -62,12 +62,12 @@ class UserPolicy
      */
     public function delete(User $user)
     {
-        if($user->hasRole('Super Admin')){
-            return true;
-        }
-        return false;
+        // if($user->hasRole('Super Admin')){
+        //     return true;
+        // }
+        // return false;
 
-         // return true;
+         return true;
     }
 
     /**
