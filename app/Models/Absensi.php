@@ -1,9 +1,10 @@
 <?php
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Model;
+use Filament\Notifications\Notification;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Absensi extends Model
 {
@@ -14,39 +15,59 @@ class Absensi extends Model
     protected $fillable = [
         'karyawan_id',
         'tanggal',
-        'jam_masuk',
-        'jam_keluar',
-        'durasi',
-        'status',
+        'absen_masuk',
+        'absen_keluar',
+        'hadir',
+        'sakit',
+        'izin',
+        'alpha',
         'keterangan'
     ];
-
-    public function getJamMasukAttribute($value)
-    {
-        return Carbon::parse($value)->format('H:i');
-    }
-
-    public function getJamKeluarAttribute($value)
-    {
-        return Carbon::parse($value)->format('H:i');
-    }
-
-    public function getDurasiAttribute()
-    {
-        if ($this->jam_masuk && $this->jam_keluar) {
-            $jamMasuk = Carbon::parse($this->jam_masuk);
-            $jamKeluar = Carbon::parse($this->jam_keluar);
-            $durasi = $jamKeluar->diff($jamMasuk);
-
-            return $durasi->format('%H:%I');
-        }
-
-        return '00:00';
-    }
 
     protected static function boot()
     {
         parent::boot();
+
+        static::saving(function ($model) {
+            if ($model->absen_masuk && $model->absen_keluar) {
+                // Tambahkan detik jika input hanya HH:MM
+                $absenMasuk = $model->absen_masuk . ':00';
+                $absenKeluar = $model->absen_keluar . ':00';
+
+                $start = strtotime($absenMasuk);
+                $end = strtotime($absenKeluar);
+
+                $durationInSeconds = $end - $start;
+
+                // Periksa dan hitung durasi sakit, izin, dan alpha
+                $subtractedDuration = 0;
+
+                foreach (['sakit', 'izin', 'alpha'] as $column) {
+                    if (!empty($model->{$column})) {
+                        // Tambahkan detik jika input hanya HH:MM
+                        $time = $model->{$column} . ':00';
+
+                        // Hitung durasi
+                        list($h, $m, $s) = array_map('intval', explode(':', $time));
+                        $subtractedDuration += ($h * 3600) + ($m * 60) + $s;
+                    }
+                }
+
+                // Kurangi durasi sakit/izin/alpha dari total durasi
+                $finalDuration = max(0, $durationInSeconds - $subtractedDuration);
+
+                // Ubah durasi menjadi format jam:menit
+                $hours = floor($finalDuration / 3600);
+                $minutes = floor(($finalDuration % 3600) / 60);
+
+                $model->hadir = sprintf('%02d:%02d', $hours, $minutes);
+            } else {
+                // Jika salah satu absen kosong, set hadir ke NULL
+                $model->hadir = null;
+            }
+        });
+
+
 
         // Event untuk mencatat aktivitas pembuatan data absensi
         static::created(function ($model) {
@@ -55,8 +76,8 @@ class Absensi extends Model
                 'action' => 'create',
                 'from' => null,
                 'to' => json_encode([
-                    'jam_masuk' => $model->jam_masuk,
-                    'jam_keluar' => $model->jam_keluar,
+                    'absen_masuk' => $model->absen_masuk,
+                    'absen_keluar' => $model->absen_keluar,
                 ]),
             ]);
         });
@@ -75,7 +96,7 @@ class Absensi extends Model
             $from = [];
             $to = [];
             foreach ($changes as $key => $value) {
-                if (in_array($key, ['jam_masuk', 'jam_keluar'])) {
+                if (in_array($key, ['absen_masuk', 'absen_keluar'])) {
                     $from[$key] = $original[$key];
                     $to[$key] = $value;
                 }
@@ -98,8 +119,8 @@ class Absensi extends Model
                 'user_id' => auth()->id(),
                 'action' => 'delete',
                 'from' => json_encode([
-                    'jam_masuk' => $model->jam_masuk,
-                    'jam_keluar' => $model->jam_keluar,
+                    'absen_masuk' => $model->absen_masuk,
+                    'absen_keluar' => $model->absen_keluar,
                 ]),
                 'to' => null,
             ]);

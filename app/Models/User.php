@@ -129,14 +129,14 @@ class User extends Authenticatable
         return $this->hasOne(Karyawan::class, 'user_id', 'id');
     }
 
-    public function canAccessPanel(Panel $panel): bool
-    {
-        return $this->hasRole(['Admin', 'Super Admin',]);
-    }
-
     // public function canAccessPanel(Panel $panel): bool
     // {
-    //     return true;
+    //     return $this->hasRole(['Admin', 'Super Admin',]);
     // }
+
+    public function canAccessPanel(Panel $panel): bool
+    {
+        return true;
+    }
 
 }
