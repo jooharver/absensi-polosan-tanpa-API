@@ -2,17 +2,18 @@
 
 namespace App\Filament\Admin\Resources;
 
-use App\Filament\Resources\AbsensiResource\Pages;
-use App\Filament\Resources\AbsensiResource\RelationManagers;
-use App\Models\Absensi;
-use Filament\Forms;
-use Filament\Forms\Form;
-use Filament\Resources\Resource;
-use Filament\Tables;
-use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Carbon\Carbon;
+use Filament\Forms;
+use Filament\Tables;
+use App\Models\Absensi;
+use Filament\Forms\Form;
+use Filament\Tables\Table;
+use Filament\Resources\Resource;
+use Filament\Notifications\Notification;
+use Illuminate\Database\Eloquent\Builder;
+use App\Filament\Resources\AbsensiResource\Pages;
+use Illuminate\Database\Eloquent\SoftDeletingScope;
+use App\Filament\Resources\AbsensiResource\RelationManagers;
 use App\Filament\Resources\AbsensiResource\Widgets\StatsOverview;
 
 class AbsensiResource extends Resource
@@ -32,20 +33,22 @@ class AbsensiResource extends Resource
         return $form
             ->schema([
                 Forms\Components\Select::make('karyawan_id')
-                    ->relationship('karyawan', 'nama'),
+                    ->relationship('karyawan', 'nama')
+                    ->required(),
                 Forms\Components\DatePicker::make('tanggal')
                 ->default(now()->timezone('Asia/Jakarta')->toDateString()) // sets the default date to today's date in Indonesia
                 ->required()
                 ->label('Tanggal'),
-                Forms\Components\TextInput::make('jam_masuk'),
-                Forms\Components\TextInput::make('jam_keluar'),
-                Forms\Components\Select::make('status')
-                ->options([
-                    'Hadir' => 'Hadir',
-                    'Sakit' => 'Sakit',
-                    'Izin' => 'Izin',
-                    'Alpa' => 'Alpa'
-                ]),
+                Forms\Components\TextInput::make('absen_masuk')
+                ->required(),
+                Forms\Components\TextInput::make('absen_keluar')
+                ->required(),
+                Forms\Components\TextInput::make('sakit')
+                ->default('00:00'),
+                Forms\Components\TextInput::make('izin')
+                ->default('00:00'),
+                Forms\Components\TextInput::make('alpha')
+                ->default('00:00'),
                 Forms\Components\Textarea::make('keterangan')
                     ->columnSpanFull(),
             ]);
@@ -61,14 +64,24 @@ class AbsensiResource extends Resource
                 Tables\Columns\TextColumn::make('tanggal')
                     ->date()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('jam_masuk')
-                    ->label('Jam Masuk')
+                Tables\Columns\TextColumn::make('absen_masuk')
+                    ->label('Absen Masuk')
                     ->formatStateUsing(fn ($state) => Carbon::parse($state)->format('H:i')),
-                Tables\Columns\TextColumn::make('jam_keluar')
-                    ->label('Jam Keluar')
+                Tables\Columns\TextColumn::make('absen_keluar')
+                    ->label('Absen Keluar')
                     ->formatStateUsing(fn ($state) => Carbon::parse($state)->format('H:i')),
-                Tables\Columns\TextColumn::make('durasi'),
-                Tables\Columns\TextColumn::make('status'),
+                Tables\Columns\TextColumn::make('hadir')
+                    ->label('Hadir')
+                    ->formatStateUsing(fn ($state) => $state ? Carbon::parse($state)->format('H:i') : '-'),
+                Tables\Columns\TextColumn::make('sakit')
+                    ->label('S')
+                    ->formatStateUsing(fn ($state) => $state ? Carbon::parse($state)->format('H:i') : '-'),
+                Tables\Columns\TextColumn::make('izin')
+                    ->label('I')
+                    ->formatStateUsing(fn ($state) => $state ? Carbon::parse($state)->format('H:i') : '-'),
+                Tables\Columns\TextColumn::make('alpha')
+                    ->label('A')
+                    ->formatStateUsing(fn ($state) => $state ? Carbon::parse($state)->format('H:i') : '-'),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -153,6 +166,5 @@ class AbsensiResource extends Resource
             'edit' => AbsensiResource\Pages\EditAbsensi::route('/{record}/edit'),
         ];
     }
-
 
 }

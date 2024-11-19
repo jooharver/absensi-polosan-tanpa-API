@@ -43,10 +43,10 @@ class PosisiResource extends Resource
                 Forms\Components\TextInput::make('hari_kerja_per_minggu')
                     ->required()
                     ->numeric(),
-                Forms\Components\TextInput::make('batas_masuk')
+                Forms\Components\TextInput::make('jam_masuk')
                     ->required()
                     ->numeric(),
-                Forms\Components\TextInput::make('batas_keluar')
+                Forms\Components\TextInput::make('jam_keluar')
                     ->required()
                     ->numeric(),
             ]);
@@ -64,11 +64,11 @@ class PosisiResource extends Resource
                 Tables\Columns\TextColumn::make('hari_kerja_per_minggu')
                     ->numeric()
                     ->sortable(),
-                    Tables\Columns\TextColumn::make('batas_masuk')
+                    Tables\Columns\TextColumn::make('jam_masuk')
                     ->numeric()
                     ->sortable()
                     ->formatStateUsing(fn ($state) => $state !== null ? sprintf('%02d:00 WIB', $state) : null),
-                Tables\Columns\TextColumn::make('batas_keluar')
+                Tables\Columns\TextColumn::make('jam_keluar')
                     ->numeric()
                     ->sortable()
                     ->formatStateUsing(fn ($state) => $state !== null ? sprintf('%02d:00 WIB', $state) : null),

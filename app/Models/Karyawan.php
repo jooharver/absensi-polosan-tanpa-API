@@ -22,12 +22,19 @@ class Karyawan extends Model
         'no_telepon',
         'email',
         'tanggal_masuk',
-        'posisi_id'
+        'face_vector',
+        'posisi_id',
+        'user_id',
     ];
 
     public function posisi()
     {
         return $this->belongsTo(Posisi::class, 'posisi_id', 'id_posisi');
+    }
+
+    public function users()
+    {
+        return $this->belongsTo(User::class, 'user_id', 'id');
     }
 
     public function absensis()

@@ -21,7 +21,8 @@ class KaryawanSeeder extends Seeder
             'agama' => 'Islam',
             'no_telepon' => '081234567890',
             'email' => 'kominfo@email.com',
-            'posisi_id' => 1, // Pastikan posisi_id ini valid di tabel posisis
+            'posisi_id' => 1,
+            'user_id' => 5
         ]);
 
         Karyawan::create([
@@ -34,6 +35,7 @@ class KaryawanSeeder extends Seeder
             'no_telepon' => '089876543210',
             'email' => 'ayu@email.com',
             'posisi_id' => 2, // Pastikan posisi_id ini valid di tabel posisis
+            'user_id' => 6
         ]);
 
         Karyawan::create([
@@ -46,6 +48,7 @@ class KaryawanSeeder extends Seeder
             'no_telepon' => '0877224353210',
             'email' => 'pocca@email.com',
             'posisi_id' => 2, // Pastikan posisi_id ini valid di tabel posisis
+            'user_id' => 7
         ]);
 
         Karyawan::create([
@@ -58,6 +61,7 @@ class KaryawanSeeder extends Seeder
             'no_telepon' => '081234998876',
             'email' => 'bjorka@email.com',
             'posisi_id' => 3, // Pastikan posisi_id ini valid di tabel posisis
+            'user_id' => 8
         ]);
 
         Karyawan::create([
@@ -70,6 +74,7 @@ class KaryawanSeeder extends Seeder
             'no_telepon' => '087789898876',
             'email' => 'pdiddy@email.com',
             'posisi_id' => 3, // Pastikan posisi_id ini valid di tabel posisis
+            'user_id' => 9
         ]);
 
     }

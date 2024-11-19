@@ -18,4 +18,6 @@ class ListAbsensis extends ListRecords
             ->icon('heroicon-o-plus'),
         ];
     }
+
+
 }

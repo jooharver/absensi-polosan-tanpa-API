@@ -14,13 +14,13 @@ class UserPolicy
      */
     public function viewAny(User $user)
     {
-        if($user->hasPermissionTo('View Posts')){
-            return true;
-        }
+        // if($user->hasPermissionTo('View Posts')){
+        //     return true;
+        // }
 
-        return false;
+        // return false;
 
-        // return true;
+        return true;
     }
 
     /**
@@ -36,12 +36,12 @@ class UserPolicy
      */
     public function create(User $user)
     {
-        if($user->hasPermissionTo('Create Posts')){
-            return true;
-        }
-        return false;
+        // if($user->hasPermissionTo('Create Posts')){
+        //     return true;
+        // }
+        // return false;
 
-        //  return true;
+         return true;
     }
 
     /**
@@ -49,12 +49,12 @@ class UserPolicy
      */
     public function update(User $user, User $model)
     {
-        if($user->hasRole('Admin') || $user->hasPermissionTo('Update Posts')){
-            return true;
-        }
-        return false;
+        // if($user->hasRole('Admin') || $user->hasPermissionTo('Update Posts')){
+        //     return true;
+        // }
+        // return false;
 
-        //  return true;
+         return true;
     }
 
     /**

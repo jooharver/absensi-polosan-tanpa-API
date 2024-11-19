@@ -12,8 +12,8 @@ class CreatePosisisTable extends Migration
             $table->string('posisi', 50);
             $table->integer('jam_kerja_per_hari');
             $table->integer('hari_kerja_per_minggu');
-            $table->integer('batas_masuk')->default(null);
-            $table->integer('batas_keluar')->default(null);
+            $table->time('jam_masuk')->default(null);
+            $table->time('jam_keluar')->default(null);
             $table->timestamps();
         });
     }

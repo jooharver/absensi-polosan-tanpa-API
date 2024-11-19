@@ -124,14 +124,19 @@ class User extends Authenticatable
         });
     }
 
-    public function canAccessPanel(Panel $panel): bool
+    public function karyawans()
     {
-        return $this->hasRole(['Admin', 'Super Admin',]);
+        return $this->hasOne(Karyawan::class, 'user_id', 'id');
     }
 
     // public function canAccessPanel(Panel $panel): bool
     // {
-    //     return true;
+    //     return $this->hasRole(['Admin', 'Super Admin',]);
     // }
+
+    public function canAccessPanel(Panel $panel): bool
+    {
+        return true;
+    }
 
 }

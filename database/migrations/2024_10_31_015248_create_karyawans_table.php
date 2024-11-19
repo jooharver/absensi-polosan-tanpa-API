@@ -21,6 +21,7 @@ return new class extends Migration
             $table->timestamp('tanggal_masuk')->useCurrent();
             $table->longtext('face_vector', 255)->nullable();
             $table->foreignId('posisi_id')->nullable()->constrained('posisis', 'id_posisi')->onDelete('set null');
+            $table->foreignId('user_id')->nullable()->constrained('users', 'id')->onDelete('set null');
             $table->timestamps();
         });
     }
