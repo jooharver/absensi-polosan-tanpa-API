@@ -24,6 +24,22 @@ class Absensi extends Model
         'keterangan'
     ];
 
+    public static function getRekapAbsensiQuery()
+    {
+        return self::fromSub(function ($query) {
+            $query->selectRaw('
+                karyawan_id,
+                COUNT(CASE WHEN hadir IS NOT NULL THEN 1 END) as total_hadir,
+                COUNT(CASE WHEN sakit IS NOT NULL THEN 1 END) as total_sakit,
+                COUNT(CASE WHEN izin IS NOT NULL THEN 1 END) as total_izin,
+                COUNT(CASE WHEN alpha IS NOT NULL THEN 1 END) as total_alpha
+            ')
+            ->from('absensis')
+            ->groupBy('karyawan_id');
+        }, 'rekap_absensi')
+        ->orderBy('karyawan_id', 'asc');
+    }
+
     protected static function boot()
     {
         parent::boot();
