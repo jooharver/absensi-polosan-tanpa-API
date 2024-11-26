@@ -12,10 +12,11 @@ Route::get('/user', function (Request $request) {
 
 Route::post('/login', [AuthController::class, 'login']);
 
-Route::middleware('auth:sanctum')->post('/logout', [AuthController::class, 'logout']);
+Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
 
 Route::middleware('auth:sanctum')->get('/history', [AuthController::class, 'getHistory']);
 
 Route::middleware('auth:sanctum')->get('/rekap-absensi', [RekapAbsensiController::class, 'getRekapByLoggedInUser']);
 
 Route::post('/face-recognition', [FaceRecognitionController::class, 'recognize']);
+
