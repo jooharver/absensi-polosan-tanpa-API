@@ -50,4 +50,23 @@ class AuthController extends Controller
             'history' => $history,
         ]);
     }
+
+    public function logout(Request $request)
+    {
+        // Pastikan pengguna sedang login
+        $user = Auth::user();
+
+        if ($user) {
+            // Hapus semua token pengguna
+            $request->user()->currentAccessToken()->delete();
+
+            return response()->json([
+                'message' => 'Logout successful',
+            ], 200);
+        }
+
+        return response()->json([
+            'message' => 'No user logged in',
+        ], 401);
+    }
 }

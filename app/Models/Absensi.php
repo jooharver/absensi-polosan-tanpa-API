@@ -84,7 +84,6 @@ class Absensi extends Model
         });
 
 
-
         // Event untuk mencatat aktivitas pembuatan data absensi
         static::created(function ($model) {
             AdminActivityLog::create([
