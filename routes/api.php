@@ -4,7 +4,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\RekapAbsensiController;
-use App\Http\Controllers\FaceRecognitionController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -18,4 +17,3 @@ Route::middleware('auth:sanctum')->get('/history', [AuthController::class, 'getH
 
 Route::middleware('auth:sanctum')->get('/rekap-absensi', [RekapAbsensiController::class, 'getRekapByLoggedInUser']);
 
-Route::post('/face-recognition', [FaceRecognitionController::class, 'recognize']);
