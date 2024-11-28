@@ -18,7 +18,7 @@ Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanc
 
 // data for flutter
 Route::middleware('auth:sanctum')->get('/history', [AbsensiController::class, 'getHistory']);
-Route::middleware('auth:sanctum')->get('/rekap-absensi', [AbsensiController::class, 'getRekapByLoggedInUser']);
+Route::middleware('auth:sanctum')->get('/rekap-absensi', [RekapController::class, 'getRekapByLoggedInUser']);
 Route::middleware('auth:sanctum')->get('/karyawan', [KaryawanController::class, 'show']);
 
 // face recognition
