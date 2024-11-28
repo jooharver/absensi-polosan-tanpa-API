@@ -32,22 +32,22 @@ class AuthController extends Controller
         ]);
     }
 
-    public function getHistory(Request $request)
+    public function logout(Request $request)
     {
-        // Mendapatkan user yang sedang login
+        // Pastikan pengguna sedang login
         $user = Auth::user();
 
-        // Pastikan user memiliki data karyawan terkait
-        if (!$user || !$user->karyawans) {
-            return response()->json(['message' => 'Employee data not found'], 404);
+        if ($user) {
+            // Hapus semua token pengguna
+            $request->user()->currentAccessToken()->delete();
+
+            return response()->json([
+                'message' => 'Logout successful',
+            ], 200);
         }
 
-        // Ambil absensi berdasarkan karyawan_id
-        $history = $user->karyawans->absensis()->orderBy('tanggal', 'desc')->get();
-
         return response()->json([
-            'karyawan' => $user->karyawans,
-            'history' => $history,
-        ]);
+            'message' => 'No user logged in',
+        ], 401);
     }
 }
