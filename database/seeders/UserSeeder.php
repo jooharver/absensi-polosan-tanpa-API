@@ -38,7 +38,7 @@ class UserSeeder extends Seeder
         User::create([
             'name' => 'Rofiq',
             'email' => 'r@email.com',
-            'password' => Hash::make('kontol'), // Menggunakan Hash untuk menyimpan password
+            'password' => Hash::make('ROF'), // Menggunakan Hash untuk menyimpan password
             'remember_token' => Str::random(60), // Menggunakan Str untuk generate remember_token
         ]);
 

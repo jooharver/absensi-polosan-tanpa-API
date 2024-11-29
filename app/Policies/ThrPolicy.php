@@ -15,10 +15,12 @@ class ThrPolicy
      */
     public function viewAny(User $user)
     {
-        if($user->hasPermissionTo('View Posts')){
-            return true;
-        }
-        return false;
+        // if($user->hasPermissionTo('View Posts')){
+        //     return true;
+        // }
+        // return false;
+
+        return true;
     }
 
     /**

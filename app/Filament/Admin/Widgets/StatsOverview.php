@@ -2,44 +2,53 @@
 
 namespace App\Filament\Admin\Widgets;
 
-use Filament\Widgets\StatsOverviewWidget as BaseWidget;
+use Carbon\Carbon;
+use App\Models\Absensi;
+use App\Models\Karyawan;
 use Filament\Widgets\StatsOverviewWidget\Stat;
-use App\Models\Karyawan; // Pastikan namespace model sesuai
-use App\Models\Absensi; // Pastikan namespace model sesuai
-use Illuminate\Support\Facades\DB;
+use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 
 class StatsOverview extends BaseWidget
 {
-    // protected function getStats(): array
-    // {
-    //     // Hitung total karyawan
-    //     // $totalKaryawan = Karyawan::count();
 
-    //     // // Hitung total karyawan hadir hari ini (status 'Hadir')
-    //     // // 
+    protected static ?string $pollingInterval = '10s';
 
-    //     // // Hitung total izin hari ini$totalHadir = Absensi::where('status', 'Hadir')
-    //     // //     ->whereDate('created_at', now()->toDateString()) // Filter untuk hari ini
-    //     // //     ->count(); (status 'Izin')
-    //     // $totalIzin = Absensi::where('status', 'Izin')
-    //     //     ->whereDate('created_at', now()->toDateString()) // Filter untuk hari ini
-    //     //     ->count();
+    protected function getStats(): array
+    {
+        $karyawan = Karyawan::count();
 
-    //     // return [
-    //     //     Stat::make('Total Karyawan', $totalKaryawan)
-    //     //         ->description("$totalKaryawan total")
-    //     //         ->descriptionIcon('heroicon-m-user-group')
-    //     //         ->color('success'),
+        $today = Carbon::now('Asia/Jakarta')->toDateString(); // Mendapatkan tanggal hari ini
 
-    //     //     // Stat::make('Karyawan Hadir Hari ini', $totalHadir)
-    //     //     //     ->description("$totalHadir hadir")
-    //     //     //     ->descriptionIcon('heroicon-m-check-circle')
-    //     //     //     ->color($totalHadir > 0 ? 'success' : 'danger'),
+        $yesterday = Carbon::yesterday('Asia/Jakarta')->toDateString();
 
-    //     //     Stat::make('Total Izin', $totalIzin)
-    //     //         ->description("$totalIzin izin")
-    //     //         ->descriptionIcon('heroicon-m-information-circle')
-    //     //         ->color('warning'),
-    //     // ];
-    // }
+        $absensiHariIni = Absensi::whereDate('tanggal', $today)->count();
+
+        $absensiHariKemarin = Absensi::whereDate('tanggal', $yesterday)->count();
+
+        return [
+            Stat::make('Total Karyawan', $karyawan)
+                ->descriptionIcon('heroicon-m-arrow-trending-up'),
+
+            Stat::make('Total Hadir Hari Ini', $absensiHariIni)
+                ->descriptionIcon('heroicon-m-arrow-trending-up') // Menambahkan ikon
+                ->chart([$absensiHariKemarin, $absensiHariIni]) // Menampilkan data chart
+                ->color('success'),
+            Stat::make('Total Sakit Hari Ini', $absensiHariIni)
+                ->descriptionIcon('heroicon-m-arrow-trending-up') // Menambahkan ikon
+                ->chart([$absensiHariKemarin, $absensiHariIni]) // Menampilkan data chart
+                ->color('gray'),
+            Stat::make('Total Izin Hari Ini', $absensiHariIni)
+                ->descriptionIcon('heroicon-m-arrow-trending-up') // Menambahkan ikon
+                ->chart([$absensiHariKemarin, $absensiHariIni]) // Menampilkan data chart
+                ->color('primary'),
+            Stat::make('Total Alpha Hari Ini', $absensiHariIni)
+                ->descriptionIcon('heroicon-m-arrow-trending-up') // Menambahkan ikon
+                ->chart([$absensiHariKemarin, $absensiHariIni]) // Menampilkan data chart
+                ->color('danger'),
+
+
+        ];
+
+
+    }
 }

@@ -36,9 +36,9 @@ class Karyawan extends Model
         return $this->hasOne(User::class, 'karyawan_id', 'id_karyawan');
     }
 
-    public function absensis()
+    public function absen()
     {
-        return $this->hasMany(Absensi::class, 'karyawan_id', 'id_karyawan');
+        return $this->hasMany(Absen::class, 'karyawan_id', 'id_karyawan');
     }
 
     protected static function boot()
