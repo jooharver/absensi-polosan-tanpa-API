@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Carbon\Carbon;
+use App\Models\AdminActivityLog;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -38,6 +39,43 @@ class Absen extends Model
         static::deleted(function ($absen) {
             Thr::calculateAndSaveTHR($absen->karyawan_id);
         });
+
+        //Pencatatan Admin Activity Log
+        static::created(function ($model) {
+            self::logAdminActivity('create', null, $model->getAttributes());
+        });
+
+        static::updated(function ($model) {
+            $original = $model->getOriginal();
+            $changes = $model->getDirty();
+
+            // Hanya log jika ada perubahan selain kolom `timestamps`
+            $relevantChanges = array_filter($changes, function ($key) {
+                return !in_array($key, ['updated_at']);
+            });
+
+            if (!empty($relevantChanges)) {
+                $from = array_intersect_key($original, $relevantChanges);
+                $to = array_intersect_key($model->getAttributes(), $relevantChanges);
+
+                self::logAdminActivity('update', $from, $to);
+            }
+        });
+
+        static::deleted(function ($model) {
+            self::logAdminActivity('delete', $model->getAttributes(), null);
+        });
+
+    }
+
+    protected static function logAdminActivity($action, $from, $to)
+    {
+        AdminActivityLog::create([
+            'user_id' => auth()->id(),
+            'action' => $action,
+            'from' => $from ? json_encode($from) : null,
+            'to' => $to ? json_encode($to) : null,
+        ]);
     }
 
     public function absen_masuk()

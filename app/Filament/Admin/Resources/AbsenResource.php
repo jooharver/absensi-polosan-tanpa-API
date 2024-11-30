@@ -94,10 +94,14 @@ class AbsenResource extends Resource
                     // Format waktu menjadi 00:00
                     return substr($record->izin ?? '00:00:00', 0, 5);
                 }),
-            Tables\Columns\TextColumn::make('alpha')
+                Tables\Columns\TextColumn::make('view_alpha')
+                ->label('Alpha')
                 ->getStateUsing(function ($record) {
+                    // Ambil data hadir dari view_absen menggunakan id_absen
+                    $viewAbsen = ViewAbsen::where('id_absen', $record->id)->first();
+                    $alpha = $viewAbsen ? $viewAbsen->alpha : '00:00:00';
                     // Format waktu menjadi 00:00
-                    return substr($record->alpha ?? '00:00:00', 0, 5);
+                    return substr($alpha, 0, 5);
                 }),
             Tables\Columns\TextColumn::make('created_at')
                 ->dateTime()

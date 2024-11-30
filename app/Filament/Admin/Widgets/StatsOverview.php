@@ -2,6 +2,7 @@
 
 namespace App\Filament\Admin\Widgets;
 
+use App\Models\Absen;
 use Carbon\Carbon;
 use App\Models\Absensi;
 use App\Models\Karyawan;
@@ -21,9 +22,9 @@ class StatsOverview extends BaseWidget
 
         $yesterday = Carbon::yesterday('Asia/Jakarta')->toDateString();
 
-        $absensiHariIni = Absensi::whereDate('tanggal', $today)->count();
+        $absensiHariIni = Absen::whereDate('tanggal', $today)->count();
 
-        $absensiHariKemarin = Absensi::whereDate('tanggal', $yesterday)->count();
+        $absensiHariKemarin = Absen::whereDate('tanggal', $yesterday)->count();
 
         return [
             Stat::make('Total Karyawan', $karyawan)
