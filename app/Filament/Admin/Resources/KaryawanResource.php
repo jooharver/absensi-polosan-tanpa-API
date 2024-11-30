@@ -34,57 +34,72 @@ class KaryawanResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('nik')
-                    ->label('NIK')
+                Forms\Components\TextInput::make('name')
                     ->required()
-                    ->maxLength(16),
-                Forms\Components\TextInput::make('nama')
-                    ->label('Nama lengkap')
-                    ->required()
-                    ->maxLength(100),
-                Forms\Components\DatePicker::make('tanggal_lahir')
-                ->required(),
-                Forms\Components\Select::make('jenis_kelamin')
-                ->options([
-                    'Laki-laki' => 'Laki-laki',
-                    'Perempuan' => 'Perempuan'
-                ]),
-                Forms\Components\Textarea::make('alamat')
-                    ->columnSpanFull()
-                    ->required(),
-                Forms\Components\Select::make('agama')
-                    ->options([
-                        'Islam' => 'Islam',
-                        'Kristen' => 'Kristen',
-                        'Katolik' => 'Katolik',
-                        'Hindu' => 'Hindu',
-                        'Buddha' => 'Buddha',
-                        'Konghucu' => 'Konghucu',
-                        'Lainnya' => 'Lainnya',
-                    ])
-                    ->required(),
-                Forms\Components\TextInput::make('no_telepon')
-                    ->tel()
-                    ->maxLength(15)
-                    ->required(),
+                    ->maxLength(255),
                 Forms\Components\TextInput::make('email')
                     ->email()
-                    ->maxLength(100),
-                Forms\Components\DatePicker::make('tanggal_masuk')
                     ->required()
-                    ->default(Carbon::now('Asia/Jakarta')),
+                    ->maxLength(255),
+                Forms\Components\Select::make('roles')
+                    ->relationship('roles', 'name')->preload()
+                    ->multiple(),
+                Forms\Components\TextInput::make('password')
+                    ->password()
+                    ->required()
+                    ->maxLength(255),
 
-                Forms\Components\FileUpload::make('face_vector')
-                    ->label('Upload Foto')
-                    ->image()
-                    ->directory('faces')
-                    ->required(),
-
-                Forms\Components\Select::make('posisi_id')
-                    ->relationship('posisi', 'posisi')
-                    ->required(),
+                // Nested form for Karyawan data
+                Forms\Components\Fieldset::make('Karyawan Data')
+                    ->schema([
+                        Forms\Components\TextInput::make('karyawan.nik')
+                            ->label('NIK')
+                            ->required()
+                            ->maxLength(16),
+                        Forms\Components\TextInput::make('karyawan.nama')
+                            ->label('Nama lengkap')
+                            ->required()
+                            ->maxLength(100),
+                        Forms\Components\DatePicker::make('karyawan.tanggal_lahir')
+                            ->required(),
+                        Forms\Components\Select::make('karyawan.jenis_kelamin')
+                            ->options([
+                                'Laki-laki' => 'Laki-laki',
+                                'Perempuan' => 'Perempuan',
+                            ]),
+                        Forms\Components\Textarea::make('karyawan.alamat')
+                            ->columnSpanFull()
+                            ->required(),
+                        Forms\Components\Select::make('karyawan.agama')
+                            ->options([
+                                'Islam' => 'Islam',
+                                'Kristen' => 'Kristen',
+                                'Katolik' => 'Katolik',
+                                'Hindu' => 'Hindu',
+                                'Buddha' => 'Buddha',
+                                'Konghucu' => 'Konghucu',
+                                'Lainnya' => 'Lainnya',
+                            ])
+                            ->required(),
+                        Forms\Components\TextInput::make('karyawan.no_telepon')
+                            ->tel()
+                            ->maxLength(15)
+                            ->required(),
+                        Forms\Components\DatePicker::make('karyawan.tanggal_masuk')
+                            ->required()
+                            ->default(Carbon::now('Asia/Jakarta')),
+                            Forms\Components\FileUpload::make('face_vector')
+                            ->label('Upload Foto')
+                            ->image()
+                            ->directory('faces')
+                            ->required(),
+                        Forms\Components\Select::make('karyawan.posisi_id')
+                            ->relationship('posisi', 'posisi')
+                            ->required(),
+                    ]),
             ]);
     }
+
 
     public static function table(Table $table): Table
     {

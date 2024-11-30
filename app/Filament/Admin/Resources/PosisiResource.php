@@ -46,10 +46,14 @@ class PosisiResource extends Resource
                     ->numeric(),
                 Forms\Components\TextInput::make('jam_masuk')
                     ->required()
-                    ->numeric(),
+                    ,
                 Forms\Components\TextInput::make('jam_keluar')
                     ->required()
-                    ->numeric(),
+                    ,
+                Forms\Components\TimePicker::make('grace_period')
+                    ->label('Grace Period')
+                    ->default('00:15:00')
+                    ->required(),
             ]);
     }
 
@@ -69,10 +73,17 @@ class PosisiResource extends Resource
                     ->numeric()
                     ->sortable()
                     ->formatStateUsing(fn ($state) => $state !== null ? sprintf('%02d:00 WIB', $state) : null),
+
                 Tables\Columns\TextColumn::make('jam_keluar')
                     ->numeric()
                     ->sortable()
                     ->formatStateUsing(fn ($state) => $state !== null ? sprintf('%02d:00 WIB', $state) : null),
+
+                Tables\Columns\TextColumn::make('grace_period')
+                    ->label('Grace Period')
+                    ->sortable()
+                    ->formatStateUsing(fn ($state) => $state !== null ? (int) \Carbon\Carbon::parse($state)->minute . "'" : null),
+
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()

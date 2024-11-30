@@ -20,7 +20,6 @@ class DatabaseSeeder extends Seeder
             PosisiSeeder::class,
             KaryawanSeeder::class,
             UserSeeder::class,
-            AbsensiSeeder::class,
             SetThrSeeder::class,
             AdminActivityLogSeeder::class,
             PermissionsSeeder::class,

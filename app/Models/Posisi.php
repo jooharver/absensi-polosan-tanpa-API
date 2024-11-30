@@ -16,7 +16,8 @@ class Posisi extends Model
         'jam_kerja_per_hari',
         'hari_kerja_per_minggu',
         'jam_masuk',
-        'jam_keluar'
+        'jam_keluar',
+        'grace_period',
     ];
 
     protected static function boot()
