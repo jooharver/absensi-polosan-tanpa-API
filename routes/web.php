@@ -38,3 +38,12 @@ Route::get('/export-rekap', function () {
 
 Route::get('/rekap/export-pdf', [RekapController::class, 'exportPDF'])->name('rekap.exportPDF');
 
+// Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () {
+//     Route::get('absensi/{id}/edit', [AbsensiController::class, 'edit'])->name('absensi.edit');
+//     Route::post('absensi/{id}/update', [AbsensiController::class, 'update'])->name('absensi.update');
+// });
+
+// Route::get('/admin/absensi/{id}/edit', [AbsensiController::class, 'edit'])->name('absensi.edit');
+
+
+

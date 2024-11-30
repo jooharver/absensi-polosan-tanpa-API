@@ -1,14 +1,14 @@
 <?php
 
-namespace App\Filament\Admin\Resources\AbsensiResource\Pages;
+namespace App\Filament\Admin\Resources\AbsenResource\Pages;
 
-use App\Filament\Admin\Resources\AbsensiResource;
+use App\Filament\Admin\Resources\AbsenResource;
 use Filament\Actions;
 use Filament\Resources\Pages\EditRecord;
 
-class EditAbsensi extends EditRecord
+class EditAbsen extends EditRecord
 {
-    protected static string $resource = AbsensiResource::class;
+    protected static string $resource = AbsenResource::class;
 
     protected function getHeaderActions(): array
     {
@@ -16,6 +16,7 @@ class EditAbsensi extends EditRecord
             Actions\DeleteAction::make(),
         ];
     }
+
 
     protected function getRedirectUrl(): string
     {

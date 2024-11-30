@@ -51,25 +51,25 @@ class THR extends Model
 
     public static function calculateAndSaveTHR($karyawanId)
     {
-        // 1. Ambil data absensi karyawan berdasarkan karyawan_id
-        $absensi = Absensi::where('karyawan_id', $karyawanId)->get();
+        // 1. Ambil data dari ViewAbsen berdasarkan karyawan_id
+        $viewAbsens = ViewAbsen::where('karyawan_id', $karyawanId)->get();
 
-        if ($absensi->isEmpty()) {
-            // Jika tidak ada data absensi, kembalikan lebih awal
+        if ($viewAbsens->isEmpty()) {
+            // Jika tidak ada data di ViewAbsen, kembalikan lebih awal
             return;
         }
 
-        // 2. Hitung total durasi hadir, sakit, dan izin (dalam jam)
-        $totalDurasiHadir = $absensi->sum(function ($item) {
-            return $item->hadir ? Carbon::parse($item->hadir)->hour : 0;
+        // 2. Hitung total durasi hadir, sakit, dan izin
+        $totalDurasiHadir = $viewAbsens->sum(function ($item) {
+            return Carbon::parse($item->hadir)->hour;
         });
 
-        $totalDurasiSakit = $absensi->sum(function ($item) {
-            return $item->sakit ? Carbon::parse($item->sakit)->hour : 0;
+        $totalDurasiSakit = $viewAbsens->sum(function ($item) {
+            return Carbon::parse($item->sakit)->hour;
         });
 
-        $totalDurasiIzin = $absensi->sum(function ($item) {
-            return $item->izin ? Carbon::parse($item->izin)->hour : 0;
+        $totalDurasiIzin = $viewAbsens->sum(function ($item) {
+            return Carbon::parse($item->izin)->hour;
         });
 
         // Total durasi yang diperhitungkan untuk THR
@@ -106,6 +106,5 @@ class THR extends Model
             ['thr' => $thr]                 // Data yang ingin diupdate atau disimpan
         );
     }
-
 
 }
