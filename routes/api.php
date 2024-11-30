@@ -3,17 +3,24 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\RekapAbsensiController;
+use App\Http\Controllers\RekapController;
+use App\Http\Controllers\FaceRecognitionController;
+use App\Http\Controllers\KaryawanController;
+use App\Http\Controllers\AbsensiController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
 
+// auth
 Route::post('/login', [AuthController::class, 'login']);
+Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
 
-Route::middleware('auth:sanctum')->post('/logout', [AuthController::class, 'logout']);
+// data for flutter
+Route::middleware('auth:sanctum')->get('/history', [AbsensiController::class, 'getHistory']);
+Route::middleware('auth:sanctum')->get('/rekap-absensi', [RekapController::class, 'getRekapByLoggedInUser']);
+Route::middleware('auth:sanctum')->get('/karyawan', [KaryawanController::class, 'show']);
 
-Route::middleware('auth:sanctum')->get('/history', [AuthController::class, 'getHistory']);
-
-Route::middleware('auth:sanctum')->get('/rekap-absensi', [RekapAbsensiController::class, 'getRekapByLoggedInUser']);
+// face recognition
+Route::post('/face-recognition', [FaceRecognitionController::class, 'recognize']);
 

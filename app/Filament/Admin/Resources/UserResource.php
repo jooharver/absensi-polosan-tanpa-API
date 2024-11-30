@@ -49,6 +49,9 @@ class UserResource extends Resource
                     ->password()
                     ->required()
                     ->maxLength(255),
+                Forms\Components\Select::make('nama')
+                    ->relationship('karyawans', 'nama')->preload()
+                    ->label('Nama Karyawan'),
             ]);
     }
 
