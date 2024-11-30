@@ -23,4 +23,3 @@ Route::middleware('auth:sanctum')->get('/karyawan', [KaryawanController::class, 
 
 // face recognition
 Route::post('/face-recognition', [FaceRecognitionController::class, 'recognize']);
-
