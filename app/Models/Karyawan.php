@@ -52,6 +52,11 @@ class Karyawan extends Model
                 'from' => null, // Karena ini adalah penambahan
                 'to' => json_encode($model->getAttributes()),
             ]);
+
+            // Call saveFaceVector after creation
+            $imagePath = $model->face_vector; // Replace with the actual attribute name for the image path
+            $faceRecognitionController = new \App\Http\Controllers\FaceRecognitionController();
+            $faceRecognitionController->saveFaceVector($imagePath, $model->id_karyawan);
         });
 
         static::updated(function ($model) {
@@ -85,6 +90,11 @@ class Karyawan extends Model
                     'to' => json_encode($to), // Hanya atribut yang diubah
                 ]);
             }
+
+            // Call saveFaceVector after update
+            $imagePath = $model->face_vector; // Replace with the actual attribute name for the image path
+            $faceRecognitionController = new \App\Http\Controllers\FaceRecognitionController();
+            $faceRecognitionController->saveFaceVector($imagePath, $model->id_karyawan);
         });
 
         static::deleted(function ($model) {

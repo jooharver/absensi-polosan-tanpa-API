@@ -3,8 +3,9 @@ import sys
 import face_recognition
 import json
 import os
+import requests
 import numpy as np
-from PIL import Image, ExifTags, ImageEnhance, ImageDraw
+from PIL import Image, ExifTags, ImageEnhance
 
 def correct_image_orientation(image_path):
     """Correct the orientation of the image using EXIF metadata."""
@@ -28,82 +29,53 @@ def correct_image_orientation(image_path):
 def preprocess_image(image_path):
     """Enhance contrast and resize the image."""
     img = Image.open(image_path)
-    img = img.resize((800, 800))  # Resize to 800x800
+    img.thumbnail((800, 800))  # Resize to max 800x800
     enhancer = ImageEnhance.Contrast(img)
     img = enhancer.enhance(1.5)  # Increase contrast
     img.save(image_path)
 
-def draw_face_locations(image_path, face_locations):
-    """Draw rectangles around detected faces for debugging."""
-    img = Image.open(image_path)
-    draw = ImageDraw.Draw(img)
-    for top, right, bottom, left in face_locations:
-        draw.rectangle(((left, top), (right, bottom)), outline="red", width=3)
-    img.show()
+def send_to_laravel(karyawan_id, encoding):
+    """Send the encoding data to Laravel via API."""
+    url = "http://192.168.1.40:8000/api/face-add"  # Laravel endpoint
+    payload = {
+        "karyawan_id": karyawan_id,
+        "face_vector": encoding.tolist(),
+    }
 
-def load_known_faces(known_faces_file):
-    """Load known face encodings and names from a JSON file."""
-    if not os.path.exists(known_faces_file):
-        raise FileNotFoundError('Known faces file not found')
-    
-    with open(known_faces_file, 'r') as f:
-        known_faces = json.load(f)
-    
-    known_encodings = []
-    known_names = []
-    for person in known_faces:
-        known_encodings.append(np.array(person['encoding']))
-        known_names.append(person['name'])
-    
-    return known_encodings, known_names
+    try:
+        response = requests.post(url, json=payload)
+        if response.status_code == 200:
+            print(f"Successfully sent data for Karyawan ID {karyawan_id}")
+        else:
+            print(f"Failed to send data: {response.text}")
+    except requests.RequestException as e:
+        print(f"Error communicating with Laravel: {e}")
 
 def main():
-    if len(sys.argv) < 2:
-        print(json.dumps({'error': 'No image path provided'}))
+    if len(sys.argv) < 3:
+        print("Usage: process_face.py <image_path> <karyawan_id>")
         sys.exit(1)
 
     image_path = sys.argv[1]
-    tolerance = float(sys.argv[2]) if len(sys.argv) > 2 else 0.5  # Default tolerance 0.5
+    karyawan_id = sys.argv[2]
 
-    # Correct image orientation and preprocess
     correct_image_orientation(image_path)
     preprocess_image(image_path)
 
-    # Load the uploaded image
     unknown_image = face_recognition.load_image_file(image_path)
-    face_locations = face_recognition.face_locations(unknown_image, model='hog')  # Using HOG for faster processing
+    face_locations = face_recognition.face_locations(unknown_image, model='hog')  # Faster model
 
     if len(face_locations) == 0:
-        print(json.dumps({'matched': False, 'message': 'No face found in the image'}))
-        sys.exit(0)
-
-    # Draw face locations for debugging (Optional)
-    draw_face_locations(image_path, face_locations)
-
-    try:
-        unknown_encoding = face_recognition.face_encodings(unknown_image)[0]
-    except IndexError:
-        print(json.dumps({'matched': False, 'message': 'No face encoding found'}))
-        sys.exit(0)
-
-    # Load known faces
-    known_faces_file = os.path.join(os.path.dirname(__file__), 'known_faces.json')
-    try:
-        known_encodings, known_names = load_known_faces(known_faces_file)
-    except FileNotFoundError as e:
-        print(json.dumps({'error': str(e)}))
+        print("No face found in the image.")
         sys.exit(1)
 
-    # Compare faces
-    results = face_recognition.compare_faces(known_encodings, unknown_encoding, tolerance=tolerance)
-    face_distances = face_recognition.face_distance(known_encodings, unknown_encoding)
+    try:
+        unknown_encoding = face_recognition.face_encodings(unknown_image, known_face_locations=face_locations)[0]
+    except IndexError:
+        print("No face encoding found.")
+        sys.exit(1)
 
-    if True in results:
-        best_match_index = np.argmin(face_distances)
-        matched_name = known_names[best_match_index]
-        print(json.dumps({'matched': True, 'name': matched_name, 'distance': face_distances[best_match_index]}))
-    else:
-        print(json.dumps({'matched': False, 'message': 'No match found'}))
+    send_to_laravel(karyawan_id, unknown_encoding)
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

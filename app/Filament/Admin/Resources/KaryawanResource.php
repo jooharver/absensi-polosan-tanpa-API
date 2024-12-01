@@ -10,11 +10,13 @@ use Filament\Forms\Form;
 use Filament\Tables\Table;
 use App\Models\AdminActivityLog;
 use Filament\Resources\Resource;
-use Filament\Tables\Filters\Filter;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Admin\Resources\KaryawanResource\Pages;
-use App\Filament\Admin\Resources\KaryawanResource\RelationManagers;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Log; // For logging
+use Symfony\Component\Process\Exception\ProcessFailedException;
+use Symfony\Component\Process\Process;
 
 class KaryawanResource extends Resource
 {
@@ -71,8 +73,11 @@ class KaryawanResource extends Resource
                 Forms\Components\DatePicker::make('tanggal_masuk')
                     ->required()
                     ->default(Carbon::now('Asia/Jakarta')),
-                Forms\Components\TextInput::make('foto_path')
-                    ->maxLength(255),
+                Forms\Components\FileUpload::make('face_vector')
+                    ->label('Upload Foto')
+                    ->image()
+                    ->directory('faces')
+                    ->required(),
                 Forms\Components\Select::make('posisi_id')
                     ->relationship('posisi', 'posisi')
                     ->required(),
@@ -86,6 +91,10 @@ class KaryawanResource extends Resource
                 Tables\Columns\TextColumn::make('nik')
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: true),
+                // Debug
+                Tables\Columns\TextColumn::make('face_vector')
+                    ->limit(50), // Optional, for debugging
+
                 Tables\Columns\TextColumn::make('nama')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('tanggal_lahir')
@@ -160,6 +169,12 @@ class KaryawanResource extends Resource
             'from' => null, // Tidak ada data sebelumnya
             'to' => json_encode($record->getAttributes()),
         ]);
+
+        // Call saveFaceVector after creation
+        $imagePath = $record->face_vector; // Replace with the actual attribute name for the image path
+        $faceRecognitionController = new \App\Http\Controllers\FaceRecognitionController();
+        $faceRecognitionController->saveFaceVector($imagePath, $record->id_karyawan);
+        Log::info('Karyawan baru berhasil ditambahkan');
     }
 
     protected static function afterUpdate(Karyawan $record): void
@@ -170,6 +185,11 @@ class KaryawanResource extends Resource
             'from' => json_encode($record->getOriginal()),
             'to' => json_encode($record->getAttributes()),
         ]);
+
+        // Call saveFaceVector after update
+        $imagePath = $record->face_vector; // Replace with the actual attribute name for the image path
+        $faceRecognitionController = new \App\Http\Controllers\FaceRecognitionController();
+        $faceRecognitionController->saveFaceVector($imagePath, $record->id_karyawan);
     }
 
     protected static function afterDelete(Karyawan $record): void
@@ -184,9 +204,8 @@ class KaryawanResource extends Resource
 
     public static function getRecordRouteKeyName(): string
     {
-    return 'id_karyawan';
+        return 'id_karyawan';
     }
-
 
     public static function getPages(): array
     {

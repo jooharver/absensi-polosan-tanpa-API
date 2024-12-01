@@ -3,8 +3,6 @@ import face_recognition
 import json
 import sys
 import os
-from PIL import Image, ImageEnhance
-
 from PIL import Image, ImageEnhance, ExifTags
 
 def preprocess_image(image_path):
@@ -34,42 +32,32 @@ def preprocess_image(image_path):
     img.save(image_path)
 
 def main():
-    if len(sys.argv) < 3:
-        print('Usage: add_face.py <image_path> <name>')
+    # Ensure the script is called with the correct arguments
+    if len(sys.argv) < 2:
+        print(json.dumps({'error': 'Usage: add_face.py <image_path>'}))
         sys.exit(1)
 
     image_path = sys.argv[1]
-    name = sys.argv[2]
 
-    preprocess_image(image_path)  # Preprocess the image
+    # Preprocess the image
+    preprocess_image(image_path)
 
+    # Load the image and detect faces
     image = face_recognition.load_image_file(image_path)
-    face_locations = face_recognition.face_locations(image, model='cnn')  # Use CNN model
+    face_locations = face_recognition.face_locations(image, model='cnn')  # Use CNN for better accuracy
+
     if len(face_locations) == 0:
-        print('No face found in the image.')
+        print(json.dumps({'error': 'No face found in the image.'}))
         sys.exit(1)
 
     # Select the largest face
     largest_face = max(face_locations, key=lambda rect: (rect[2] - rect[0]) * (rect[1] - rect[3]))
     encoding = face_recognition.face_encodings(image, known_face_locations=[largest_face])[0]
 
-    known_faces_file = os.path.join(os.path.dirname(__file__), 'known_faces.json')
-
-    if os.path.exists(known_faces_file):
-        with open(known_faces_file, 'r') as f:
-            known_faces = json.load(f)
-    else:
-        known_faces = []
-
-    known_faces.append({
-        'name': name,
-        'encoding': encoding.tolist()
-    })
-
-    with open(known_faces_file, 'w') as f:
-        json.dump(known_faces, f)
-
-    print(f'Added {name} to known faces.')
+    # Output the face encoding as JSON
+    print(json.dumps({
+        'face_vector': encoding.tolist()
+    }))
 
 if __name__ == '__main__':
     main()
