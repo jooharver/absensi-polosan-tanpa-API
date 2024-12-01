@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Mpdf\Mpdf;
 use App\Models\Absensi;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class AbsensiController extends Controller
 {
@@ -36,9 +37,11 @@ class AbsensiController extends Controller
     {
         // Mendapatkan user yang sedang login
         $user = Auth::user();
+        Log::error('user found bitch!.');
 
         // Pastikan user memiliki data karyawan terkait
         if (!$user || !$user->karyawans) {
+            Log::error('No authenticated user found.');
             return response()->json(['message' => 'Employee data not found'], 404);
         }
         
