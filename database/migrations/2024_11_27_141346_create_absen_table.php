@@ -24,6 +24,8 @@ return new class extends Migration
                 ->nullable()
                 ->constrained('absen_keluar', 'id_absen_keluar') // Kolom pada tabel referensi
                 ->onDelete('set null');
+            $table->time('hadir')->nullable()->default('00:00:00');
+            $table->time('sakit')->nullable()->default('00:00:00');
             $table->time('sakit')->nullable()->default('00:00:00');
             $table->time('izin')->nullable()->default('00:00:00');
             $table->time('alpha')->nullable()->default('00:00:00');

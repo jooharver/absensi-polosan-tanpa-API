@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use App\Models\AdminActivityLog;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Database\Eloquent\Model;
+use App\Http\Controllers\AbsenController;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Absen extends Model
@@ -43,6 +44,10 @@ class Absen extends Model
         //Pencatatan Admin Activity Log
         static::created(function ($model) {
             self::logAdminActivity('create', null, $model->getAttributes());
+
+            // Hitung alpha menggunakan controller
+            $alphaController = new \App\Http\Controllers\AbsenController();
+            // $alphaController->hitungAlpha($model);
         });
 
         static::updated(function ($model) {

@@ -7,15 +7,16 @@ use Filament\Forms;
 use Filament\Tables;
 use App\Models\Absen;
 use Filament\Forms\Form;
+use App\Models\ViewAbsen;
 use App\Models\AbsenMasuk;
 use Filament\Tables\Table;
 use App\Models\AbsenKeluar;
 use Filament\Resources\Resource;
+use App\Http\Controllers\AbsenController;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Admin\Resources\AbsenResource\Pages;
 use App\Filament\Admin\Resources\AbsenResource\RelationManagers;
-use App\Models\ViewAbsen;
 
 class AbsenResource extends Resource
 {
@@ -65,6 +66,15 @@ class AbsenResource extends Resource
                 ]);
 
 
+    }
+
+    protected function afterCreate(Absen $record): void
+    {
+        $absen = $this->$record;a
+
+        // Panggil fungsi hitungAlpha di AbsenController
+        $controller = new AbsenController();
+        // $controller->hitungAlpha($absen);
     }
 
     public static function table(Table $table): Table
