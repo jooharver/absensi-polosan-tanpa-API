@@ -14,7 +14,7 @@ class Absen extends Model
     use HasFactory;
 
     protected $table = 'absen'; // Nama tabel
-    protected $fillable = ['karyawan_id', 'absen_masuk_id', 'absen_keluar_id', 'hadir', 'sakit', 'izin', 'alpha', 'keterangan'];
+    protected $fillable = ['karyawan_id', 'jam_masuk', 'jam_keluar', 'hadir', 'sakit', 'izin', 'alpha', 'keterangan'];
 
     protected static function boot()
     {
@@ -33,21 +33,22 @@ class Absen extends Model
         });
 
         // Perhitungan THR dilakukan tanpa pengaruh pada log admin activity
-        static::saved(function ($absen) {
-            Thr::calculateAndSaveTHR($absen->karyawan_id);
-        });
+        // static::saved(function ($absen) {
+        //     Thr::calculateAndSaveTHR($absen->karyawan_id);
+        // });
 
-        static::deleted(function ($absen) {
-            Thr::calculateAndSaveTHR($absen->karyawan_id);
-        });
+        // static::deleted(function ($absen) {
+        //     Thr::calculateAndSaveTHR($absen->karyawan_id);
+        // });
 
-        //Pencatatan Admin Activity Log
+
         static::created(function ($model) {
             self::logAdminActivity('create', null, $model->getAttributes());
 
             // Hitung alpha menggunakan controller
-            $alphaController = new \App\Http\Controllers\AbsenController();
-            // $alphaController->hitungAlpha($model);
+            $controller = new \App\Http\Controllers\AbsenController();
+            $controller->hitungHadir($model);
+            $controller->hitungAlpha($model);a
         });
 
         static::updated(function ($model) {
@@ -83,16 +84,16 @@ class Absen extends Model
         ]);
     }
 
-    public function absen_masuk()
-    {
-        return $this->belongsTo(AbsenMasuk::class, 'absen_masuk_id', 'id_absen_masuk');
-    }
+    // public function absen_masuk()
+    // {
+    //     return $this->belongsTo(AbsenMasuk::class, 'absen_masuk_id', 'id_absen_masuk');
+    // }
 
-    // Relasi ke tabel absen_keluar
-    public function absen_keluar()
-    {
-        return $this->belongsTo(AbsenKeluar::class, 'absen_keluar_id', 'id_absen_keluar');
-    }
+    // // Relasi ke tabel absen_keluar
+    // public function absen_keluar()
+    // {
+    //     return $this->belongsTo(AbsenKeluar::class, 'absen_keluar_id', 'id_absen_keluar');
+    // }
 
     public function karyawan()
     {

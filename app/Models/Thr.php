@@ -49,62 +49,62 @@ class THR extends Model
         }
     }
 
-    public static function calculateAndSaveTHR($karyawanId)
-    {
-        // 1. Ambil data dari ViewAbsen berdasarkan karyawan_id
-        $viewAbsens = ViewAbsen::where('karyawan_id', $karyawanId)->get();
+    // public static function calculateAndSaveTHR($karyawanId)
+    // {
+    //     // 1. Ambil data dari ViewAbsen berdasarkan karyawan_id
+    //     $viewAbsens = ViewAbsen::where('karyawan_id', $karyawanId)->get();
 
-        if ($viewAbsens->isEmpty()) {
-            // Jika tidak ada data di ViewAbsen, kembalikan lebih awal
-            return;
-        }
+    //     if ($viewAbsens->isEmpty()) {
+    //         // Jika tidak ada data di ViewAbsen, kembalikan lebih awal
+    //         return;
+    //     }
 
-        // 2. Hitung total durasi hadir, sakit, dan izin
-        $totalDurasiHadir = $viewAbsens->sum(function ($item) {
-            return Carbon::parse($item->hadir)->hour;
-        });
+    //     // 2. Hitung total durasi hadir, sakit, dan izin
+    //     $totalDurasiHadir = $viewAbsens->sum(function ($item) {
+    //         return Carbon::parse($item->hadir)->hour;
+    //     });
 
-        $totalDurasiSakit = $viewAbsens->sum(function ($item) {
-            return Carbon::parse($item->sakit)->hour;
-        });
+    //     $totalDurasiSakit = $viewAbsens->sum(function ($item) {
+    //         return Carbon::parse($item->sakit)->hour;
+    //     });
 
-        $totalDurasiIzin = $viewAbsens->sum(function ($item) {
-            return Carbon::parse($item->izin)->hour;
-        });
+    //     $totalDurasiIzin = $viewAbsens->sum(function ($item) {
+    //         return Carbon::parse($item->izin)->hour;
+    //     });
 
-        // Total durasi yang diperhitungkan untuk THR
-        $totalDurasiKerja = $totalDurasiHadir + $totalDurasiSakit + $totalDurasiIzin;
+    //     // Total durasi yang diperhitungkan untuk THR
+    //     $totalDurasiKerja = $totalDurasiHadir + $totalDurasiSakit + $totalDurasiIzin;
 
-        // 3. Ambil data karyawan dan pastikan tidak null
-        $karyawan = Karyawan::find($karyawanId);
-        if (!$karyawan) {
-            return;
-        }
+    //     // 3. Ambil data karyawan dan pastikan tidak null
+    //     $karyawan = Karyawan::find($karyawanId);
+    //     if (!$karyawan) {
+    //         return;
+    //     }
 
-        // 4. Ambil data posisi karyawan
-        $posisi = Posisi::find($karyawan->posisi_id);
-        if (!$posisi) {
-            return;
-        }
+    //     // 4. Ambil data posisi karyawan
+    //     $posisi = Posisi::find($karyawan->posisi_id);
+    //     if (!$posisi) {
+    //         return;
+    //     }
 
-        // Mengambil jam kerja per hari dan hari kerja per minggu dari posisi
-        $jamKerjaPerHari = $posisi->jam_kerja_per_hari;
-        $hariKerjaPerMinggu = $posisi->hari_kerja_per_minggu;
+    //     // Mengambil jam kerja per hari dan hari kerja per minggu dari posisi
+    //     $jamKerjaPerHari = $posisi->jam_kerja_per_hari;
+    //     $hariKerjaPerMinggu = $posisi->hari_kerja_per_minggu;
 
-        // 5. Hitung total durasi kerja yang dibutuhkan per tahun
-        $totalDurasiKerjaDibutuhkan = $jamKerjaPerHari * $hariKerjaPerMinggu * 52;
+    //     // 5. Hitung total durasi kerja yang dibutuhkan per tahun
+    //     $totalDurasiKerjaDibutuhkan = $jamKerjaPerHari * $hariKerjaPerMinggu * 52;
 
-        // 6. Ambil besaran THR dari tabel SetThr sesuai posisi
-        $besaranTHR = SetThr::where('posisi_id', $posisi->id_posisi)->value('besaran_thr');
+    //     // 6. Ambil besaran THR dari tabel SetThr sesuai posisi
+    //     $besaranTHR = SetThr::where('posisi_id', $posisi->id_posisi)->value('besaran_thr');
 
-        // 7. Hitung THR berdasarkan proporsi durasi kerja aktual dan yang dibutuhkan
-        $thr = $totalDurasiKerjaDibutuhkan > 0 ? ($besaranTHR * $totalDurasiKerja) / $totalDurasiKerjaDibutuhkan : 0;
+    //     // 7. Hitung THR berdasarkan proporsi durasi kerja aktual dan yang dibutuhkan
+    //     $thr = $totalDurasiKerjaDibutuhkan > 0 ? ($besaranTHR * $totalDurasiKerja) / $totalDurasiKerjaDibutuhkan : 0;
 
-        // 8. Simpan nilai THR di tabel THRs
-        THR::updateOrCreate(
-            ['karyawan_id' => $karyawanId], // Kunci pencarian
-            ['thr' => $thr]                 // Data yang ingin diupdate atau disimpan
-        );
-    }
+    //     // 8. Simpan nilai THR di tabel THRs
+    //     THR::updateOrCreate(
+    //         ['karyawan_id' => $karyawanId], // Kunci pencarian
+    //         ['thr' => $thr]                 // Data yang ingin diupdate atau disimpan
+    //     );
+    // }
 
 }

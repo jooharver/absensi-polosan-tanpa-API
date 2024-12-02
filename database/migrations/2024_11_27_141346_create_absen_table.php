@@ -12,20 +12,10 @@ return new class extends Migration
             $table->id();
             $table->date('tanggal')->default(now()->toDateString())
             ->nullable();
-            $table->foreignId('karyawan_id')
-            ->nullable()
-            ->constrained('karyawans', 'id_karyawan') // Kolom pada tabel referensi
-            ->onDelete('set null');
-            $table->foreignId('absen_masuk_id')
-                ->nullable()
-                ->constrained('absen_masuk', 'id_absen_masuk') // Kolom pada tabel referensi
-                ->onDelete('set null');
-            $table->foreignId('absen_keluar_id')
-                ->nullable()
-                ->constrained('absen_keluar', 'id_absen_keluar') // Kolom pada tabel referensi
-                ->onDelete('set null');
+            $table->foreignId('karyawan_id');
+            $table->time('jam_masuk')->nullable();
+            $table->time('jam_keluar')->nullable();
             $table->time('hadir')->nullable()->default('00:00:00');
-            $table->time('sakit')->nullable()->default('00:00:00');
             $table->time('sakit')->nullable()->default('00:00:00');
             $table->time('izin')->nullable()->default('00:00:00');
             $table->time('alpha')->nullable()->default('00:00:00');

@@ -34,20 +34,11 @@ class AbsenResource extends Resource
     {
         return $form
         ->schema([
+            Forms\Components\TimePicker::make('jam_masuk')
+            ,
+            Forms\Components\TimePicker::make('jam_keluar')
+            ,
 
-            Forms\Components\Section::make('Absen Masuk')
-                ->schema([
-                    Forms\Components\TimePicker::make('jam_masuk')
-                        ->label('Jam Masuk')
-                ])
-                ->relationship('absen_masuk'),
-
-            Forms\Components\Section::make('Absen Keluar')
-                ->schema([
-                    Forms\Components\TimePicker::make('jam_keluar')
-                        ->label('Jam Keluar'),
-                ])
-                ->relationship('absen_keluar'),
                 Forms\Components\DatePicker::make('tanggal')
                 ->default(now('Asia/Jakarta')->toDateString()) // sets the default date to today's date in Asia/Jakarta timezone
                 ->required()
@@ -70,11 +61,14 @@ class AbsenResource extends Resource
 
     protected function afterCreate(Absen $record): void
     {
-        $absen = $this->$record;a
+        $absen = $this->$record;
 
         // Panggil fungsi hitungAlpha di AbsenController
         $controller = new AbsenController();
-        // $controller->hitungAlpha($absen);
+        $controller->hitungHadir($absen);
+        $controller->hitungAlpha($absen);
+
+
     }
 
     public static function table(Table $table): Table
@@ -83,36 +77,13 @@ class AbsenResource extends Resource
         ->columns([
             Tables\Columns\TextColumn::make('tanggal'),
             Tables\Columns\TextColumn::make('karyawan.nama'),
-            Tables\Columns\TextColumn::make('absen_masuk.jam_masuk'),
-            Tables\Columns\TextColumn::make('absen_keluar.jam_keluar'),
-            Tables\Columns\TextColumn::make('view_hadir')
-                ->label('Hadir')
-                ->getStateUsing(function ($record) {
-                    // Ambil data hadir dari view_absen menggunakan id_absen
-                    $viewAbsen = ViewAbsen::where('id_absen', $record->id)->first();
-                    $hadir = $viewAbsen ? $viewAbsen->hadir : '00:00:00';
-                    // Format waktu menjadi 00:00
-                    return substr($hadir, 0, 5);
-                }),
-            Tables\Columns\TextColumn::make('sakit')
-                ->getStateUsing(function ($record) {
-                    // Format waktu menjadi 00:00
-                    return substr($record->sakit ?? '00:00:00', 0, 5);
-                }),
-            Tables\Columns\TextColumn::make('izin')
-                ->getStateUsing(function ($record) {
-                    // Format waktu menjadi 00:00
-                    return substr($record->izin ?? '00:00:00', 0, 5);
-                }),
-                Tables\Columns\TextColumn::make('view_alpha')
-                ->label('Alpha')
-                ->getStateUsing(function ($record) {
-                    // Ambil data hadir dari view_absen menggunakan id_absen
-                    $viewAbsen = ViewAbsen::where('id_absen', $record->id)->first();
-                    $alpha = $viewAbsen ? $viewAbsen->alpha : '00:00:00';
-                    // Format waktu menjadi 00:00
-                    return substr($alpha, 0, 5);
-                }),
+            Tables\Columns\TextColumn::make('jam_masuk'),
+            Tables\Columns\TextColumn::make('jam_keluar'),
+            Tables\Columns\TextColumn::make('hadir'),
+            Tables\Columns\TextColumn::make('sakit'),
+            Tables\Columns\TextColumn::make('izin'),
+            Tables\Columns\TextColumn::make('alpha'),
+
             Tables\Columns\TextColumn::make('created_at')
                 ->dateTime()
                 ->sortable()
