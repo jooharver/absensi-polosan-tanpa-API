@@ -3,9 +3,40 @@ namespace App\Http\Controllers;
 
 use App\Models\Absen;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class AbsenController extends Controller
 {
+    //    FLutter get history
+    public function getHistory(Request $request)
+    {
+        // Mendapatkan user yang sedang login
+        $user = Auth::user();
+
+        // Pastikan user memiliki data karyawan terkait
+        if (!$user || !$user->karyawans) {
+            return response()->json(['message' => 'Employee data not found'], 404);
+        }
+
+        // Ambil bulan dan tahun dari request
+        $month = $request->query('month');
+        $year = $request->query('year');
+
+        // Ambil absensi berdasarkan karyawan_id dan filter bulan dan tahun jika ada
+        $query = $user->karyawans->absen()->orderBy('tanggal', 'desc');
+
+        if ($month && $year) {
+            $query->whereMonth('tanggal', $month)->whereYear('tanggal', $year);
+        }
+
+        $history = $query->get();
+
+        return response()->json([
+            'karyawan' => $user->karyawans,
+            'history' => $history,
+        ]);
+    }
+
     public function hitungHadir(Absen $model)
     {
         // Ambil posisi karyawan
