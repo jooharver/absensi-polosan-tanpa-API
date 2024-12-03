@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 use App\Models\Absen;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\Log;
 
 class AbsenController extends Controller
 {
@@ -35,6 +37,51 @@ class AbsenController extends Controller
             'karyawan' => $user->karyawans,
             'history' => $history,
         ]);
+    }
+
+    //Still API
+    public function recordAttendance($karyawan_id)
+    {
+        try {
+            // Get today's date
+            $today = Carbon::today();
+
+            // Check for existing Absen record for today
+            $absen = Absen::where('karyawan_id', $karyawan_id)
+                ->whereDate('tanggal', $today)
+                ->first();
+
+            if (!$absen) {
+                // No Absen record for today, create one
+                $absen = new Absen();
+                $absen->karyawan_id = $karyawan_id;
+                $absen->tanggal = $today;
+                $absen->save();
+            }
+
+            if (!$absen->jam_masuk) {
+                // User has not checked in yet, record check-in time
+                $absen->jam_masuk = Carbon::now();
+                $absen->hadir = true;
+                $absen->save();
+
+                Log::info('Check-in recorded for karyawan_id: ' . $karyawan_id);
+            } elseif (!$absen->jam_keluar) {
+                // User has already checked in but not checked out, record check-out time
+                $absen->jam_keluar = Carbon::now();
+                $absen->save();
+
+                Log::info('Check-out recorded for karyawan_id: ' . $karyawan_id);
+            } else {
+                // User has already checked in and out today
+                Log::info('User has already checked in and out today.');
+            }
+
+            return $absen;
+        } catch (\Exception $e) {
+            Log::error('Error in recordAttendance: ' . $e->getMessage());
+            return null;
+        }
     }
 
     public function hitungHadir(Absen $model)
