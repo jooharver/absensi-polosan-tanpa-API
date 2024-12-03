@@ -111,8 +111,10 @@ class FaceRecognitionController extends Controller
                     Log::info('Face matched. Presence accepted.');
 
                     // Proceed with attendance recording or other logic
+                    
+                    $this->recordAttendance($karyawan_id);
+                    return response()->json(['status' => 'sucess', 'message' => 'Presensi berhasil.'], 200);
                     // You can use your existing logic here
-                    return $this->recordAttendance($karyawan_id);
                 } else {
                     Log::info('Face not recognized.');
                     $errorDetails = $result['error'] ?? '';

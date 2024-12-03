@@ -44,7 +44,7 @@ def main():
 
     # Load the image and detect faces
     image = face_recognition.load_image_file(image_path)
-    face_locations = face_recognition.face_locations(image, model='cnn')  # Use CNN for better accuracy
+    face_locations = face_recognition.face_locations(image, model='hog')
 
     if len(face_locations) == 0:
         print(json.dumps({'error': 'No face found in the image.'}))
