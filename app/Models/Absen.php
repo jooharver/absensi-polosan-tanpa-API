@@ -48,7 +48,7 @@ class Absen extends Model
             // Hitung alpha menggunakan controller
             $controller = new \App\Http\Controllers\AbsenController();
             $controller->hitungHadir($model);
-            $controller->hitungAlpha($model);a
+            $controller->hitungAlpha($model);
         });
 
         static::updated(function ($model) {
