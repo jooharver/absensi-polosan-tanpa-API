@@ -55,20 +55,6 @@ class AbsenResource extends Resource
                 Forms\Components\Textarea::make('keterangan')
                     ->columnSpanFull(),
                 ]);
-
-
-    }
-
-    protected function afterCreate(Absen $record): void
-    {
-        $absen = $this->$record;
-
-        // Panggil fungsi hitungAlpha di AbsenController
-        $controller = new AbsenController();
-        $controller->hitungHadir($absen);
-        $controller->hitungAlpha($absen);
-
-
     }
 
     public static function table(Table $table): Table
@@ -92,6 +78,19 @@ class AbsenResource extends Resource
                 ->dateTime()
                 ->sortable()
                 ->toggleable(isToggledHiddenByDefault: true),
+        ])
+        ->headerActions([
+            Tables\Actions\Action::make('Export Excel')
+                ->label('Export Excel')
+                ->url(route('export-absensi'))
+                ->icon('heroicon-o-arrow-down-tray')
+                ->openUrlInNewTab(),
+            // Mengubah ekspor PDF menjadi action yang memanggil controller
+            Tables\Actions\Action::make('Export PDF')
+                ->label('Export PDF')
+                ->url(route('absensi.exportPDF'))
+                ->icon('heroicon-o-arrow-down-tray')
+                ->openUrlInNewTab(),
         ])
 
             ->filters([

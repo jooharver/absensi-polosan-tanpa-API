@@ -20,16 +20,12 @@ class DatabaseSeeder extends Seeder
             PosisiSeeder::class,
             KaryawanSeeder::class,
             UserSeeder::class,
+            AbsenSeeder::class,
             SetThrSeeder::class,
             AdminActivityLogSeeder::class,
             PermissionsSeeder::class,
             RolesSeeder::class,
             OfficeSeeder::class,
-
-            // RoleSeeder::class,
-            // ModelHasRoleSeeder::class,
-            // PermissionSeeder::class,
-            // RoleHasPermissionSeeder::class,
 
         ]);
 

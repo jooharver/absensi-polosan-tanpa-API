@@ -91,8 +91,8 @@ class KaryawanResource extends Resource
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 // Debug
-                Tables\Columns\TextColumn::make('face_vector')
-                    ->limit(50), // Optional, for debugging
+                // Tables\Columns\TextColumn::make('face_vector')
+                //     ->limit(50), // Optional, for debugging
 
                 Tables\Columns\TextColumn::make('nama')
                     ->searchable(),
