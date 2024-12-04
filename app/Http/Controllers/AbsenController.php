@@ -20,18 +20,8 @@ class AbsenController extends Controller
             return response()->json(['message' => 'Employee data not found'], 404);
         }
 
-        // Ambil bulan dan tahun dari request
-        $month = $request->query('month');
-        $year = $request->query('year');
-
         // Ambil absensi berdasarkan karyawan_id dan filter bulan dan tahun jika ada
-        $query = $user->karyawans->absen()->orderBy('tanggal', 'desc');
-
-        if ($month && $year) {
-            $query->whereMonth('tanggal', $month)->whereYear('tanggal', $year);
-        }
-
-        $history = $query->get();
+        $history = $user->karyawans->absen()->get();
 
         return response()->json([
             'karyawan' => $user->karyawans,
@@ -39,7 +29,7 @@ class AbsenController extends Controller
         ]);
     }
 
-    //Still API
+    //Still API from face recognition
     public function recordAttendance($karyawan_id)
     {
         try {
@@ -62,25 +52,56 @@ class AbsenController extends Controller
             if (!$absen->jam_masuk) {
                 // User has not checked in yet, record check-in time
                 $absen->jam_masuk = Carbon::now();
-                $absen->hadir = true;
                 $absen->save();
 
                 Log::info('Check-in recorded for karyawan_id: ' . $karyawan_id);
+
+                return response()->json([
+                    'status' => 'success',
+                    'message' => 'Check-in recorded successfully',
+                    'data' => [
+                        'type' => 'check_in',
+                        'time' => $absen->jam_masuk,
+                    ]
+                ], 200);
             } elseif (!$absen->jam_keluar) {
-                // User has already checked in but not checked out, record check-out time
+                // User has checked in but not checked out, record check-out time
                 $absen->jam_keluar = Carbon::now();
                 $absen->save();
 
                 Log::info('Check-out recorded for karyawan_id: ' . $karyawan_id);
+
+                // Call hitungHadir method now that both jam_masuk and jam_keluar are set
+                $this->hitungHadir($absen);
+
+                return response()->json([
+                    'status' => 'success',
+                    'message' => 'Check-out recorded successfully',
+                    'data' => [
+                        'type' => 'check_out',
+                        'time' => $absen->jam_keluar,
+                    ]
+                ], 200);
             } else {
                 // User has already checked in and out today
                 Log::info('User has already checked in and out today.');
-            }
 
-            return $absen;
+                return response()->json([
+                    'status' => 'info',
+                    'message' => 'You have already checked in and out today',
+                    'data' => [
+                        'check_in' => $absen->jam_masuk,
+                        'check_out' => $absen->jam_keluar,
+                    ]
+                ], 200);
+            }
         } catch (\Exception $e) {
             Log::error('Error in recordAttendance: ' . $e->getMessage());
-            return null;
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Failed to record attendance',
+                'error' => $e->getMessage()
+            ], 500);
         }
     }
 
@@ -171,13 +192,6 @@ class AbsenController extends Controller
             }
         }
     }
-
-
-
-
-
-
-
 
 
 //lawas

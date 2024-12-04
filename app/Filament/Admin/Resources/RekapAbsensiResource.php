@@ -29,6 +29,9 @@ class RekapAbsensiResource extends Resource
                     ->label('ID Karyawan')
                     ->sortable()
                     ->searchable(),
+                Tables\Columns\TextColumn::make('bulan')
+                    ->label('Bulan')
+                    ->sortable(),                
                 Tables\Columns\TextColumn::make('total_hadir')
                     ->label('Total Hadir')
                     ->sortable(),

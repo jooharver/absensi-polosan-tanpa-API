@@ -31,35 +31,6 @@ class AbsensiController extends Controller
         $mpdf->Output('Absensi.pdf', 'D');
     }
 
-    // FLutter get history
-    public function getHistory(Request $request)
-    {
-        // Mendapatkan user yang sedang login
-        $user = Auth::user();
-
-        // Pastikan user memiliki data karyawan terkait
-        if (!$user || !$user->karyawans) {
-            return response()->json(['message' => 'Employee data not found'], 404);
-        }
-
-        // Ambil bulan dan tahun dari request
-        $month = $request->query('month');
-        $year = $request->query('year');
-
-        // Ambil absensi berdasarkan karyawan_id dan filter bulan dan tahun jika ada
-        $query = $user->karyawans->absensis()->orderBy('tanggal', 'desc');
-
-        if ($month && $year) {
-            $query->whereMonth('tanggal', $month)->whereYear('tanggal', $year);
-        }
-
-        $history = $query->get();
-
-        return response()->json([
-            'karyawan' => $user->karyawans,
-            'history' => $history,
-        ]);
-    }
 
      // Menampilkan form edit absensi
      public function edit($id)
