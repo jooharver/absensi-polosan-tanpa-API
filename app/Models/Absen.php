@@ -20,38 +20,23 @@ class Absen extends Model
     {
         parent::boot();
 
-        static::deleting(function ($absen) {
-            // Hapus data di absen_masuk jika ada
-            if ($absen->absen_masuk) {
-                $absen->absen_masuk->delete();
-            }
-
-            // Hapus data di absen_keluar jika ada
-            if ($absen->absen_keluar) {
-                $absen->absen_keluar->delete();
-            }
+        // Perhitungan THR dilakukan tanpa pengaruh pada log admin activity
+        static::saved(function ($absen) {
+            Thr::calculateAndSaveTHR($absen->karyawan_id);
         });
 
-        // Perhitungan THR dilakukan tanpa pengaruh pada log admin activity
-        // static::saved(function ($absen) {
-        //     Thr::calculateAndSaveTHR($absen->karyawan_id);
-        // });
-
-        // static::deleted(function ($absen) {
-        //     Thr::calculateAndSaveTHR($absen->karyawan_id);
-        // });
+        static::deleted(function ($absen) {
+            Thr::calculateAndSaveTHR($absen->karyawan_id);
+        });
 
 
         static::created(function ($model) {
             self::logAdminActivity('create', null, $model->getAttributes());
 
-            // Hitung alpha menggunakan controller
-            $controller = new \App\Http\Controllers\AbsenController();
-            $controller->hitungHadir($model);
-            $controller->hitungAlpha($model);a
         });
 
         static::updated(function ($model) {
+
             $original = $model->getOriginal();
             $changes = $model->getDirty();
 
@@ -66,6 +51,7 @@ class Absen extends Model
 
                 self::logAdminActivity('update', $from, $to);
             }
+
         });
 
         static::deleted(function ($model) {
@@ -84,16 +70,6 @@ class Absen extends Model
         ]);
     }
 
-    // public function absen_masuk()
-    // {
-    //     return $this->belongsTo(AbsenMasuk::class, 'absen_masuk_id', 'id_absen_masuk');
-    // }
-
-    // // Relasi ke tabel absen_keluar
-    // public function absen_keluar()
-    // {
-    //     return $this->belongsTo(AbsenKeluar::class, 'absen_keluar_id', 'id_absen_keluar');
-    // }
 
     public function karyawan()
     {

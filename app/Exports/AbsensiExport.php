@@ -2,7 +2,7 @@
 
 namespace App\Exports;
 
-use App\Models\Absensi;
+use App\Models\Absen;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 
@@ -14,7 +14,7 @@ class AbsensiExport implements FromCollection, WithHeadings
     public function collection()
     {
         // Mengambil semua data Absensi dengan relasi karyawan
-        return Absensi::with('karyawan')->get()->map(function ($absensis) {
+        return Absen::with('karyawan')->get()->map(function ($absensis) {
             return [
                 'ID Absensi' => $absensis->id_absensi,
                 'NIK' => $absensis->karyawan->nama,
@@ -39,7 +39,7 @@ class AbsensiExport implements FromCollection, WithHeadings
             'Tanggal',
             'Jam Masuk',
             'Jam Keluar',
-            'Durasi',
+            // 'Durasi',
             'Status',
             'Keterangan',
         ];

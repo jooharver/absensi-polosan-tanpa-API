@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Controllers;
 
+use Mpdf\Mpdf;
 use App\Models\Absen;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -37,101 +38,21 @@ class AbsenController extends Controller
         ]);
     }
 
-    public function hitungHadir(Absen $model)
+    public function exportPDF()
     {
-        // Ambil posisi karyawan
-        $posisi = $model->karyawan->posisi;
+        // Ambil data absensi dari database
+        $absensis = Absen::all();
 
-        if ($posisi) {
-            // Ambil batas jam masuk dan jam keluar dari posisi karyawan
-            $batasJamMasuk = strtotime($posisi->jam_masuk); // Jam masuk yang ditentukan (misalnya jam 07:00)
-            $batasJamKeluar = strtotime($posisi->jam_keluar); // Jam keluar yang ditentukan (misalnya jam 15:00)
+        // Siapkan HTML untuk PDF
+        $html = view('exports.absensi_pdf', compact('absensis'))->render();
 
-            $jamMasuk = strtotime($model->jam_masuk);
-            $jamKeluar = $model->jam_keluar ? strtotime($model->jam_keluar) : null;
+        // Buat instance mPDF dan konversi HTML ke PDF
+        $mpdf = new Mpdf();
+        $mpdf->WriteHTML($html);
 
-            // Jika jam masuk lebih awal dari batas jam masuk, set jam masuk ke batas jam masuk
-            if ($jamMasuk < $batasJamMasuk) {
-                $jamMasuk = $batasJamMasuk;
-            }
-
-            if ($jamKeluar) {
-                // Menentukan jam keluar terdekat (dibulatkan ke jam penuh terdekat)
-                $jamKeluarTerdekat = floor($jamKeluar / 3600) * 3600;
-
-                // Jika jam keluar lebih besar atau sama dengan jam keluar yang ditentukan
-                if ($jamKeluar >= $batasJamKeluar) {
-                    $jamKeluarTerdekat = $batasJamKeluar;
-                }
-
-                // Hitung berapa jam penuh yang dilalui antara jam masuk dan jam keluar
-                $durasiHadir = floor(($jamKeluarTerdekat - $jamMasuk) / 3600); // Hitung durasi dalam jam penuh
-
-                // Jika durasi hadir kurang dari 1 jam, anggap sebagai 0
-                if ($durasiHadir < 1) {
-                    $durasiHadir = 0;
-                }
-
-                // Set durasi hadir
-                $model->hadir = gmdate('H:i:s', $durasiHadir * 3600);
-            } else {
-                // Jika jam keluar belum diinputkan, beri nilai default
-                $model->hadir = '00:00:00';
-            }
-
-            $model->save();
-        } else {
-            throw new \Exception('Posisi karyawan tidak ditemukan.');
-        }
+        // Unduh file PDF
+        $mpdf->Output('Absensi.pdf', 'D');
     }
-
-    public function hitungAlpha(Absen $model)
-    {
-        if ($model->jam_masuk && $model->jam_keluar) {
-            // Ambil data posisi karyawan
-            $posisi = $model->karyawan->posisi;
-
-            if ($posisi && $posisi->jam_masuk && $posisi->jam_kerja_per_hari) {
-                $batasJamMasuk = strtotime($posisi->jam_masuk); // Batas jam masuk yang seharusnya
-                $jamKerjaPerHari = $posisi->jam_kerja_per_hari; // Jam kerja per hari yang telah ditentukan
-
-                // Hitung keterlambatan (alpha)
-                $jamMasuk = strtotime($model->jam_masuk);
-                $selisihDetik = $jamMasuk - $batasJamMasuk;
-                $durasiAlphaJam = 0;
-
-                if ($selisihDetik > 0) {
-                    // Bulatkan ke atas keterlambatan dalam jam penuh
-                    $durasiAlphaJam = ceil($selisihDetik / 3600);
-                    $durasiAlphaJam = min($durasiAlphaJam, $jamKerjaPerHari); // Durasi alpha dibatasi jam kerja per hari
-                }
-
-                // Hitung durasi kerja total dengan memperhatikan batas jam keluar
-                $jamKeluar = strtotime($model->jam_keluar);
-                $jamKeluarBulat = floor($jamKeluar / 3600) * 3600; // Bulatkan ke bawah ke kelipatan jam terdekat
-
-                // Hitung durasi hadir
-                $totalDurasiHadirDetik = $jamKeluarBulat - $jamMasuk;
-                $totalDurasiHadirJam = floor($totalDurasiHadirDetik / 3600); // Durasi hadir dalam jam penuh
-
-                // Durasi hadir tidak boleh lebih dari jam kerja per hari
-                $durasiHadirJam = min($totalDurasiHadirJam, $jamKerjaPerHari);
-
-                // Simpan hasil
-                $model->alpha = gmdate('H:i:s', $durasiAlphaJam * 3600); // Format H:i:s untuk alpha
-                $model->hadir = gmdate('H:i:s', $durasiHadirJam * 3600); // Format H:i:s untuk hadir
-                $model->save();
-            }
-        }
-    }
-
-
-
-
-
-
-
-
 
 //lawas
 

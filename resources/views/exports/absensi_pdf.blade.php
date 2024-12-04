@@ -44,7 +44,7 @@
                     <td>{{ $absensi->tanggal ? \Carbon\Carbon::parse($absensi->tanggal)->format('d-m-Y') : '-' }}</td>
                     <td>{{ $absensi->jam_masuk }}</td>
                     <td>{{ $absensi->jam_keluar }}</td>
-                    <td>{{ $absensi->durasi . ' jam' }}</td>
+                    {{-- <td>{{ $absensi->durasi . ' jam' }}</td> --}}
                     <td>{{ $absensi->status }}</td>
                     <td>{{ $absensi->keterangan }}</td>
                 </tr>

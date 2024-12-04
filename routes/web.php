@@ -1,15 +1,16 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
 use App\Exports\ThrExport;
-use Maatwebsite\Excel\Facades\Excel;
-use App\Http\Controllers\ThrController;
-use App\Exports\KaryawanExport;
 use App\Exports\RekapExport;
-use App\Http\Controllers\KaryawanController;
-use App\Http\Controllers\RekapController;
 use App\Exports\AbsensiExport;
+use App\Exports\KaryawanExport;
+use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ThrController;
+use App\Http\Controllers\AbsenController;
+use App\Http\Controllers\RekapController;
 use App\Http\Controllers\AbsensiController;
+use App\Http\Controllers\KaryawanController;
 
 
 
@@ -27,7 +28,7 @@ Route::get('/export-absensi', function () {
     return Excel::download(new AbsensiExport(), 'absensi_data.xlsx');
 })->name('export-absensi');
 
-Route::get('/absensi/export-pdf', [AbsensiController::class, 'exportPDF'])->name('absensi.exportPDF');
+Route::get('/absensi/export-pdf', [AbsenController::class, 'exportPDF'])->name('absensi.exportPDF');
 
 Route::get('/export-thr', [ThrController::class, 'export'])->name('export-thr');
 Route::get('/thr/export-pdf', [ThrController::class, 'exportPDF'])->name('thr.exportPDF');

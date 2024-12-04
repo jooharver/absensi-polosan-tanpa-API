@@ -77,7 +77,7 @@ class KaryawanResource extends Resource
                     ->label('Upload Foto')
                     ->image()
                     ->directory('faces')
-                    ->required(),
+                    ,
                 Forms\Components\Select::make('posisi_id')
                     ->relationship('posisi', 'posisi')
                     ->required(),
@@ -92,8 +92,8 @@ class KaryawanResource extends Resource
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 // Debug
-                Tables\Columns\TextColumn::make('face_vector')
-                    ->limit(50), // Optional, for debugging
+                // Tables\Columns\TextColumn::make('face_vector')
+                //     ->limit(50), // Optional, for debugging
 
                 Tables\Columns\TextColumn::make('nama')
                     ->searchable(),
