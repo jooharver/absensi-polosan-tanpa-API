@@ -9,7 +9,6 @@
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet"/>
-    <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css"/>
 
     <!-- Styles / Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
@@ -83,41 +82,73 @@
         </li>
     </ul>
 </nav>
-<main>
-    <section
-        class="m-6 bg-[#FBFCFF] rounded-lg flex flex-col items-center text-center p-4 pt-16 relative"
-    >
-        <img src="{{asset('assets/bg-element.png')}}" alt="" class="absolute top-4 left-4 max-md:hidden"/>
-        <img
-            src="{{asset('assets/bg-element.png')}}"
-            alt=""
-            class="absolute top-4 right-4 rotate-180 max-md:hidden"
-        />
-
-        <h1 class="text-[#17A2B8] text-2xl w-1/2 max-md:w-full font-medium" data-aos="fade-in">
-            Sistem Manajemen Karyawan!
-        </h1>
-        <p class="text-[#196E85] text-base w-1/3 mb-8 max-md:w-full font-light tracking-wide" data-aos="fade-in">
-            Platform ini dirancang untuk memudahkan proses pengelolaan data karyawan, absensi, rekapitulasi, pengelolaan
-            akun, dan thr karyawan <b>PR UD PUTRA BINTANG TIMUR</b>.
+<main class="px-20 py-14 bg-gray-100 text-gray-800 w-full">
+    <!-- Tentang Kami -->
+    <section class="mb-10">
+        <h2 class="text-2xl font-bold text-cyan-800 mb-4">Tentang Kami</h2>
+        <p class="leading-7">
+            Sistem Manajemen Karyawan (SMK) adalah platform digital yang dirancang untuk mempermudah perusahaan
+            dalam mengelola data karyawan, absensi, rekapitulasi, pengelolaan akun, hingga pengelolaan
+            Tunjangan
+            Hari Raya (THR). SMK memberikan solusi terintegrasi untuk meningkatkan efisiensi dan akurasi dalam
+            manajemen sumber daya manusia.
         </p>
-        <img src="{{asset('assets/img.png')}}" alt="" class="w-2/3 max-md:w-full rounded-lg" data-aos="fade-in"/>
     </section>
-    <section class="mt-20 px-20 flex max-md:flex-col gap-16 mb-20" data-aos="slide-up">
-        <img src="{{asset('assets/image.png')}}" alt="" class="rounded-lg"/>
-        <div class="flex flex-col justify-center">
-            <h1 class="text-4xl text-[#17A2B8] font-semibold mb-6">
-                Tentang SMK
-            </h1>
-            <p class="text-lg">
-                Sistem Manajemen Karyawan (SMK) adalah platform terintegrasi yang dirancang untuk memudahkan proses
-                pengelolaan data karyawan, absensi, rekapitulasi, pengelolaan akun, serta pengelolaan THR secara efisien
-                dan transparan. Dengan platform ini, setiap proses administrasi karyawan dapat dilakukan dengan mudah,
-                memastikan manajemen sumber daya manusia berjalan lebih efektif.
-            </p>
+
+    <!-- Kenapa Memilih SMK -->
+    <section class="flex justify-between max-md:flex-col gap-8">
+        <div>
+            <h3 class="text-xl font-semibold text-cyan-800 mb-3">Kenapa Memilih SMK?</h3>
+            <div class="flex flex-col gap-6">
+                <div
+                    class="bg-white shadow-lg rounded-lg p-6 flex gap-4 hover:scale-105 transition duration-300 ease-in-out">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-[#17A2B8]" viewBox="0 0 24 24"
+                         fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                         stroke-linejoin="round">
+                        <path d="M3 3h18v18H3z"/>
+                        <path d="M7 7h10M7 11h6M7 15h8"/>
+                    </svg>
+                    <div>
+                        <h4 class="text-lg font-semibold text-cyan-800 mb-3">Pengelolaan Data Karyawan</h4>
+                        <p>Memudahkan pencatatan dan pengelolaan data karyawan secara terpusat dan aman.</p>
+                    </div>
+                </div>
+                <div
+                    class="bg-white shadow-lg rounded-lg p-6 flex gap-4 hover:scale-105 transition duration-300 ease-in-out">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-[#17A2B8]" viewBox="0 0 24 24"
+                         fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                         stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10"/>
+                        <path d="M12 6v6l4 2"/>
+                    </svg>
+                    <div>
+                        <h4 class="text-lg font-semibold text-cyan-800 mb-3">Absensi Otomatis</h4>
+                        <p>Menyediakan fitur absensi digital dengan rekapitulasi otomatis dan real-time.</p>
+                    </div>
+                </div>
+                <div
+                    class="bg-white shadow-lg rounded-lg p-6 flex gap-4 hover:scale-105 transition duration-300 ease-in-out">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-[#17A2B8]" viewBox="0 0 24 24"
+                         fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                         stroke-linejoin="round">
+                        <path d="M20 12a8 8 0 1 1-16 0 8 8 0 0 1 16 0z"/>
+                        <path d="M12 8v4h3"/>
+                    </svg>
+                    <div>
+                        <h4 class="text-lg font-semibold text-cyan-800 mb-3">pengelolaan THR</h4>
+                        <p>Fitur pengelolaan THR yang akurat sesuai peraturan yang berlaku.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="border rounded-lg shadow-lg w-full">
+            <iframe class="w-full h-full"
+                    id="gmap_canvas"
+                    src="https://maps.google.com/maps?width=520&amp;height=400&amp;hl=en&amp;q=Jl.%20Imam%20Bonjol%20No.%20885,%20RT.%20004%20RW.%20008,%20Ardimulyo,%20Kec.%20Singosari,%20Kab.%20Malang%20-%20Jawa%20Timur%2065153%20Malang+(PT%20UD%20BINTANG%20PUTRA%20TIMUR)&amp;t=&amp;z=12&amp;ie=UTF8&amp;iwloc=B&amp;output=embed"></iframe>
         </div>
     </section>
 </main>
+
 <footer class="bg-[#17A2B8] px-20 py-14 relative">
     <img
         src="{{asset('assets/bg-element.png')}}"
@@ -165,9 +196,7 @@
         <span class="text-white font-bold">SMK</span> All rights reserved.
     </p>
 </div>
-<script src="https://unpkg.com/aos@next/dist/aos.js"></script>
 <script>
-    AOS.init();
     document.getElementById('menu-toggle').addEventListener('click', () => {
         const mobileMenu = document.getElementById('mobile-menu');
         mobileMenu.classList.toggle('hidden');

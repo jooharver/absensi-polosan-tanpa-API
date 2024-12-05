@@ -18,6 +18,10 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+Route::get('/contact', function () {
+    return view('contact');
+});
+
 Route::get('/export-karyawan', function () {
     return Excel::download(new KaryawanExport(), 'karyawan_data.xlsx');
 })->name('export-karyawan');
