@@ -10,7 +10,7 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Model;
 
-class THR extends Model
+class Thr extends Model
 {
     protected $table = 'thrs';
     protected $primaryKey = 'id_thr'; // Set primary key menjadi id_thr
