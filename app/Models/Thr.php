@@ -10,7 +10,7 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Model;
 
-class THR extends Model
+class Thr extends Model
 {
     protected $table = 'thrs';
     protected $primaryKey = 'id_thr'; // Set primary key menjadi id_thr
@@ -64,7 +64,7 @@ class THR extends Model
         if (!$totalDurasi || ($totalDurasi->total_hadir + $totalDurasi->total_sakit + $totalDurasi->total_izin) == 0) {
             // Jika tidak ada data, kembalikan lebih awal
             return;
-        }a
+        }
 
         // Total durasi kerja aktual (dalam menit)
         $totalDurasiKerja = $totalDurasi->total_hadir + $totalDurasi->total_sakit + $totalDurasi->total_izin;
