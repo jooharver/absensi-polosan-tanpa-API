@@ -57,14 +57,15 @@ class THR extends Model
             ->selectRaw("
                 SUM(TIME_TO_SEC(hadir)) / 60 as total_hadir,
                 SUM(TIME_TO_SEC(sakit)) / 60 as total_sakit,
-                SUM(TIME_TO_SEC(izin)) / 60 as total_izin
+                SUM(TIME_TO_SEC(izin)) / 60 as total_izin,
+                SUM(TIME_TO_SEC(alpha)) / 60 as total_alpha
             ")
             ->first();
 
         if (!$totalDurasi || ($totalDurasi->total_hadir + $totalDurasi->total_sakit + $totalDurasi->total_izin) == 0) {
             // Jika tidak ada data, kembalikan lebih awal
             return;
-        }a
+        }
 
         // Total durasi kerja aktual (dalam menit)
         $totalDurasiKerja = $totalDurasi->total_hadir + $totalDurasi->total_sakit + $totalDurasi->total_izin;
