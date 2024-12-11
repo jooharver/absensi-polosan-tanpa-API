@@ -51,7 +51,6 @@ class Absen extends Model
 
                 self::logAdminActivity('update', $from, $to);
             }
-
         });
 
         static::deleted(function ($model) {
