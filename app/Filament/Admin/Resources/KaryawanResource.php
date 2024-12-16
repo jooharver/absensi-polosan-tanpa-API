@@ -76,8 +76,7 @@ class KaryawanResource extends Resource
                 Forms\Components\FileUpload::make('face_vector')
                     ->label('Upload Foto')
                     ->image()
-                    ->directory('faces')
-                    ,
+                    ->directory('faces'),
                 Forms\Components\Select::make('posisi_id')
                     ->relationship('posisi', 'posisi')
                     ->required(),
@@ -174,7 +173,6 @@ class KaryawanResource extends Resource
         $imagePath = $record->face_vector; // Replace with the actual attribute name for the image path
         $faceRecognitionController = new \App\Http\Controllers\FaceRecognitionController();
         $faceRecognitionController->saveFaceVector($imagePath, $record->id_karyawan);
-        Log::info('Karyawan baru berhasil ditambahkan');
     }
 
     protected static function afterUpdate(Karyawan $record): void

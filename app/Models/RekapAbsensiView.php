@@ -15,6 +15,7 @@ class RekapAbsensiView extends Model
 
     protected $fillable = [
         'karyawan_id',
+        'bulan',
         'total_hadir',
         'total_sakit',
         'total_izin',
