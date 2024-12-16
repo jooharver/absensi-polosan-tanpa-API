@@ -113,29 +113,42 @@ class FaceRecognitionController extends Controller
         Log::info('saveFaceVector method called.');
         Log::info('Karyawan ID: ' . $id);
         Log::info('Image path: ' . $imagePath);
-
+    
         // Fetch Karyawan record
         $karyawan = Karyawan::findOrFail($id);
         Log::info('Karyawan found: ' . $karyawan->id);
-
-        // Convert the face to a vector
-        $faceVector = $this->convertFaceToVector($imagePath);
-        if ($faceVector === null) {
+    
+        try {
+            // Convert the face to a vector
+            $faceVector = $this->convertFaceToVector($imagePath);
+            if ($faceVector === null) {
+                // Jika gagal memproses wajah
+                throw new \Exception('Face processing failed or no valid face vector returned.');
+            }
+    
+            // Save the face vector to the database
+            $this->saveFaceVectorToDatabase($karyawan, $faceVector);
+    
+            // Hapus file foto setelah berhasil
+            $this->deleteImage($imagePath);
+    
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Face vector successfully saved to the database.',
+            ]);
+        } catch (\Exception $e) {
+            // Log error
+            Log::error('Error during face vector saving: ' . $e->getMessage());
+    
+            // Hapus file foto jika gagal
+            $this->deleteImage($imagePath);
+    
             return response()->json([
                 'status' => 'error',
-                'message' => 'Face processing failed or no valid face vector returned.',
+                'message' => $e->getMessage(),
             ], 500);
         }
-
-        // Save the face vector to the database
-        $this->saveFaceVectorToDatabase($karyawan, $faceVector);
-
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Face vector successfully saved to the database.',
-        ]);
     }
-
     private function convertFaceToVector($imagePath)
     {
         // Path to the Python script
@@ -197,5 +210,19 @@ class FaceRecognitionController extends Controller
         $karyawan->face_vector = json_encode($faceVector);
         $karyawan->save();
         Log::info('Face vector saved successfully.');
+    }
+
+    private function deleteImage($imagePath)
+    {
+        try {
+            if (file_exists($imagePath)) {
+                unlink($imagePath);
+                Log::info('Image deleted: ' . $imagePath);
+            } else {
+                Log::warning('Image not found for deletion: ' . $imagePath);
+            }
+        } catch (\Exception $e) {
+            Log::error('Error deleting image: ' . $e->getMessage());
+        }
     }
 }
