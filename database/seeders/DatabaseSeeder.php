@@ -26,6 +26,7 @@ class DatabaseSeeder extends Seeder
             PermissionsSeeder::class,
             RolesSeeder::class,
             OfficeSeeder::class,
+            IzinSeeder::class,
 
         ]);
 
@@ -34,7 +35,7 @@ class DatabaseSeeder extends Seeder
             'email' => 'admin@example.com',
             'password' => Hash::make('admin')
         ]);
-        $role = Role::create(['name' => 'Admin']);
+        $role = 'Super Admin';
         $user->assignRole($role);
         // $permission = Permission::create(['name' => 'edit articles']);
     }

@@ -125,7 +125,28 @@ class AbsenSeeder extends Seeder
             // Check if the day is Monday to Friday
             if (in_array($startDate->format('N'), [1, 2, 3, 4, 5])) {
                 Absen::create([
+                    'karyawan_id' => 2,
+                    'tanggal' => $startDate->format('Y-m-d'),
+                    'jam_masuk' => $this->generateRandomTime('06:00:00', '08:00:00'),
+                    'jam_keluar' => $this->generateRandomTime('14:00:00', '16:00:00'),
+                ]);
+
+                Absen::create([
                     'karyawan_id' => 3,
+                    'tanggal' => $startDate->format('Y-m-d'),
+                    'jam_masuk' => $this->generateRandomTime('06:00:00', '08:00:00'),
+                    'jam_keluar' => $this->generateRandomTime('14:00:00', '16:00:00'),
+                ]);
+
+                Absen::create([
+                    'karyawan_id' => 4,
+                    'tanggal' => $startDate->format('Y-m-d'),
+                    'jam_masuk' => $this->generateRandomTime('06:00:00', '08:00:00'),
+                    'jam_keluar' => $this->generateRandomTime('14:00:00', '16:00:00'),
+                ]);
+
+                Absen::create([
+                    'karyawan_id' => 5,
                     'tanggal' => $startDate->format('Y-m-d'),
                     'jam_masuk' => $this->generateRandomTime('06:00:00', '08:00:00'),
                     'jam_keluar' => $this->generateRandomTime('14:00:00', '16:00:00'),
@@ -140,6 +161,7 @@ class AbsenSeeder extends Seeder
             // Move to the next day
             $startDate->modify('+1 day');
         }
+
     }
 
     public function rollback(): void
