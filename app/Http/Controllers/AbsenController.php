@@ -54,45 +54,6 @@ class AbsenController extends Controller
         $mpdf->Output('Absensi.pdf', 'D');
     }
 
-//lawas
-
-    // public function hitungAlpha(Absen $model)
-    // {
-    //     if ($model->jam_masuk && $model->jam_keluar) {
-    //         // Ambil data posisi karyawan
-    //         $posisi = $model->karyawan->posisi;
-
-    //         if ($posisi && $posisi->jam_masuk && $posisi->jam_kerja_per_hari) {
-    //             $batasJamMasuk = strtotime($posisi->jam_masuk);
-    //             $jamKerjaPerHari = $posisi->jam_kerja_per_hari;
-
-    //             // Hitung keterlambatan (alpha)
-    //             $jamMasuk = strtotime($model->jam_masuk);
-    //             $selisihDetik = $jamMasuk - $batasJamMasuk;
-    //             $durasiAlphaJam = 0;
-
-    //             if ($selisihDetik > 0) {
-    //                 // Bulatkan ke atas keterlambatan dalam jam penuh
-    //                 $durasiAlphaJam = ceil($selisihDetik / 3600);
-    //                 $durasiAlphaJam = min($durasiAlphaJam, $jamKerjaPerHari); // Batas maksimal alpha = jam kerja per hari
-    //             }
-
-    //             // Hitung durasi kerja total
-    //             $jamKeluar = strtotime($model->jam_keluar);
-    //             $totalDurasiKerja = $jamKeluar - $jamMasuk;
-    //             $totalDurasiKerjaJam = floor($totalDurasiKerja / 3600); // Durasi kerja dalam jam penuh
-
-    //             // Pastikan hadir tidak melebihi total durasi kerja atau jam kerja per hari
-    //             $durasiHadirJam = max(0, min($totalDurasiKerjaJam, $jamKerjaPerHari - $durasiAlphaJam));
-
-    //             // Simpan hasil
-    //             $model->alpha = gmdate('H:i:s', $durasiAlphaJam * 3600); // Format H:i:s
-    //             $model->hadir = gmdate('H:i:s', $durasiHadirJam * 3600); // Format H:i:s
-    //             $model->save();
-    //         }
-    //     }
-    // }
-
 
     public function index()
     {

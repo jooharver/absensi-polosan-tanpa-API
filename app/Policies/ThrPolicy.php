@@ -36,9 +36,9 @@ class ThrPolicy
      */
     public function create(User $user)
     {
-        if($user->hasRole('Super Admin')){
-            return true;
-        }
+        // if($user->hasRole('Super Admin')){
+        //     return true;
+        // }
         return false;
     }
 
@@ -47,9 +47,9 @@ class ThrPolicy
      */
     public function update(User $user, Thr $thr)
     {
-        if($user->hasRole('Super Admin')){
-            return true;
-        }
+        // if($user->hasRole('Super Admin')){
+        //     return true;
+        // }a
         return false;
     }
 
