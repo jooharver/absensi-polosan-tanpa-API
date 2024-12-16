@@ -18,7 +18,7 @@ class AbsenController extends Controller
 
         // Pastikan user memiliki data karyawan terkait
         if (!$user || !$user->karyawans) {
-            return response()->json(['message' => 'Employee data not found'], 404);
+            return response()->json(['message' => 'Data karyawan tidak ditemukan'], 404);
         }
 
         // Ambil absensi berdasarkan karyawan_id dan filter bulan dan tahun jika ada
@@ -59,7 +59,7 @@ class AbsenController extends Controller
 
                 return response()->json([
                     'status' => 'success',
-                    'message' => 'Check-in recorded successfully',
+                    'message' => 'Presensi masuk berhasil dicatat',
                     'data' => [
                         'type' => 'check_in',
                         'time' => $absen->jam_masuk,
@@ -74,30 +74,30 @@ class AbsenController extends Controller
 
                 return response()->json([
                     'status' => 'success',
-                    'message' => 'Check-out recorded successfully',
+                    'message' => 'Presensi pulang berhasil dicatat',
                     'data' => [
                         'type' => 'check_out',
                         'time' => $absen->jam_keluar,
                     ]
                 ], 200);
-            } else {
+            } else if ($absen->jam_keluar != null) {
                 // User has already checked in and out today
                 Log::info('User has already checked in and out today.');
-
+                
                 return response()->json([
                     'status' => 'info',
-                    'message' => 'You have already checked in and out today',
+                    'message' => 'Anda sudah presensi hari ini!',
                     'data' => [
                         'check_in' => $absen->jam_masuk,
                         'check_out' => $absen->jam_keluar,
-                    ]
-                ], 200);
-            }
+                        ]
+                    ], 200);
+                }
         } catch (\Exception $e) {
             Log::error('Error in recordAttendance: ' . $e->getMessage());
             return response()->json([
                 'status' => 'error',
-                'message' => 'Failed to record attendance',
+                'message' => 'Presensi gagal',
                 'error' => $e->getMessage()
             ], 500);
         }
