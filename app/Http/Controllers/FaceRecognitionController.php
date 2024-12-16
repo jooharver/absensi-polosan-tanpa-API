@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Karyawan;
 use Illuminate\Support\Facades\Log;
+use App\Http\Controllers\AbsenController;
 
 class FaceRecognitionController extends Controller
 {
@@ -45,14 +46,17 @@ class FaceRecognitionController extends Controller
             $user = \Illuminate\Support\Facades\Auth::user();
             if (!$user) {
                 Log::error('No authenticated user found.');
-                return response()->json(['status' => 'error', 'message' => 'User not authenticated.'], 401);
+                return response()->json(['status' => 'error', 'message' => 'User tidak valid'], 401);
             }
 
             // Get karyawan_id from the user
             $karyawan_id = $user->karyawan_id;
             if (!$karyawan_id) {
                 Log::error('No karyawan_id associated with user.');
-                return response()->json(['status' => 'error', 'message' => 'User has no associated karyawan.'], 400);
+                return response()->json(
+                    ['status' => 'error',
+                     'message' => 'User tidak terkait dengan karyawan siapapun.'], 
+                     400);
             }
 
             // Retrieve the face vector from the database
@@ -102,21 +106,17 @@ class FaceRecognitionController extends Controller
                 if ($result['matched'] === true) {
                     Log::info('Face matched. Proceeding with attendance.');
 
-                    // Call hitungHadir method in AbsenController
+                    // Call recordAttendance method in AbsenController
                     $absenController = new AbsenController();
                     $absen = app('App\Http\Controllers\AbsenController')->recordAttendance($karyawan_id);
 
-                    // Call hitungHadir method and pass the Absen model
-                    if ($absen) {
-                        $absenController->hitungHadir($absen);
-                    }
-
+                    // Remove hitungHadir call since it's handled by trigger
                     return response()->json([
                         'status' => 'success',
-                        'message' => 'Attendance recorded successfully.',
+                        'message' => 'Presensi berhasil.',
                     ], 200);
                 } else {
-                    Log::info('Face not recognized.');
+                    Log::info('Wajah tidak dikenali.');
                     $errorDetails = $result['error'] ?? '';
                     return response()->json(['status' => 'fail', 'message' => 'Face not recognized.', 'details' => $errorDetails], 401);
                 }
@@ -125,7 +125,7 @@ class FaceRecognitionController extends Controller
                 $errorDetails = $result['error'] ?? 'Unknown error';
                 return response()->json([
                     'status' => 'error',
-                    'message' => 'Error executing Python script.',
+                    'message' => 'Proses pengenalan wajah gagal.',
                     'details' => $errorDetails,
                 ], 500);
             }
