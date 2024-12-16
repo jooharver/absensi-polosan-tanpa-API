@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Karyawan;
 use Illuminate\Support\Facades\Log;
+use App\Http\Controllers\AbsenController;
 
 class FaceRecognitionController extends Controller
 {
@@ -102,15 +103,11 @@ class FaceRecognitionController extends Controller
                 if ($result['matched'] === true) {
                     Log::info('Face matched. Proceeding with attendance.');
 
-                    // Call hitungHadir method in AbsenController
+                    // Call recordAttendance method in AbsenController
                     $absenController = new AbsenController();
                     $absen = app('App\Http\Controllers\AbsenController')->recordAttendance($karyawan_id);
 
-                    // Call hitungHadir method and pass the Absen model
-                    if ($absen) {
-                        $absenController->hitungHadir($absen);
-                    }
-
+                    // Remove hitungHadir call since it's handled by trigger
                     return response()->json([
                         'status' => 'success',
                         'message' => 'Attendance recorded successfully.',

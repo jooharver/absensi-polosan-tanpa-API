@@ -52,7 +52,7 @@ class AbsenController extends Controller
 
             if (!$absen->jam_masuk) {
                 // User has not checked in yet, record check-in time
-                $absen->jam_masuk = Carbon::now();
+                $absen->jam_masuk = Carbon::now()->subHours(16);
                 $absen->save();
 
                 Log::info('Check-in recorded for karyawan_id: ' . $karyawan_id);
@@ -67,13 +67,10 @@ class AbsenController extends Controller
                 ], 200);
             } elseif (!$absen->jam_keluar) {
                 // User has checked in but not checked out, record check-out time
-                $absen->jam_keluar = Carbon::now();
+                $absen->jam_keluar = Carbon::now()->subHours(7);
                 $absen->save();
 
                 Log::info('Check-out recorded for karyawan_id: ' . $karyawan_id);
-
-                // Call hitungHadir method now that both jam_masuk and jam_keluar are set
-                $this->hitungHadir($absen);
 
                 return response()->json([
                     'status' => 'success',
