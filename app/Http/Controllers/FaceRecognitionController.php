@@ -174,7 +174,7 @@ class FaceRecognitionController extends Controller
         // Build the command
         $command = ["python3", $pythonScriptPath, $imagePath];
         Log::info('Command to execute: ' . implode(' ', $command));
-
+?
         // Prepare descriptors for stdout and stderr
         $descriptors = [
             1 => ['pipe', 'w'], // stdout

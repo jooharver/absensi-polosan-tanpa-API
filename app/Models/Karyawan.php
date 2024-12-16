@@ -2,8 +2,13 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\Izin;
+use App\Models\User;
+use App\Models\Absen;
+use App\Models\Posisi;
+use App\Models\AdminActivityLog;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Karyawan extends Model
 {
@@ -39,6 +44,10 @@ class Karyawan extends Model
     public function absen()
     {
         return $this->hasMany(Absen::class, 'karyawan_id', 'id_karyawan');
+    }
+
+    public function izin(){
+        return $this->hasMany(Izin::class, 'karyawan_id', 'id_karyawan');
     }
 
     protected static function boot()

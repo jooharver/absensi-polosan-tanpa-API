@@ -31,6 +31,6 @@ class CreateViewRekapAbsensi extends Migration
      */
     public function down(): void
     {
-        DB::statement("DROP VIEW IF EXISTS view_rekap_absensi");
+        DB::unprepared("DROP VIEW IF EXIST view_rekap_absensi");
     }
 }

@@ -74,6 +74,7 @@ class AbsenResource extends Resource
             ->label('Keluar')
             ->formatStateUsing(fn ($state) => $state ? \Carbon\Carbon::createFromFormat('H:i:s', $state)->format('H:i') : null),
             Tables\Columns\TextColumn::make('hadir')
+            ->default('00:00:00')
             ->formatStateUsing(fn ($state) => $state ? \Carbon\Carbon::createFromFormat('H:i:s', $state)->format('H:i') : null),
             Tables\Columns\TextColumn::make('sakit')
             ->formatStateUsing(fn ($state) => $state ? \Carbon\Carbon::createFromFormat('H:i:s', $state)->format('H:i') : null),
