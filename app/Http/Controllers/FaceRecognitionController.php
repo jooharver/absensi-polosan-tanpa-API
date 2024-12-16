@@ -40,8 +40,9 @@ class FaceRecognitionController extends Controller
 
             Log::info('Python script path: ' . $pythonScriptPath);
 
-            // Build the command
-            $command = ["python3", $pythonScriptPath, $imagePath];
+	    // Build the command
+	    $python = env('PYTHON_PATH','python3');
+            $command = [$python, $pythonScriptPath, $imagePath];
             Log::info('Command to execute: ' . implode(' ', $command));
 
             // Prepare descriptors for stdout and stderr
