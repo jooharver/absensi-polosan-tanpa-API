@@ -24,8 +24,6 @@ class DatabaseSeeder extends Seeder
             UserSeeder::class,
             AbsenSeeder::class,
             SetThrSeeder::class,
-            AdminActivityLogSeeder::class,
-            OfficeSeeder::class,
             IzinSeeder::class,
 
         ]);

@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Karyawan;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str; // Tambahkan ini
@@ -46,6 +47,7 @@ class UserSeeder extends Seeder
         $user3->assignRole($role1);
 
         $user4 = User::create([
+            'karyawan_id' => 1,
             'name' => 'Budie Arie S.',
             'email' => 'b@email.com',
             'password' => Hash::make('budie'), // Menggunakan Hash untuk menyimpan password
@@ -55,6 +57,7 @@ class UserSeeder extends Seeder
         $user4->assignRole($role1);
 
         $user5 = User::create([
+            'karyawan_id' => 3,
             'name' => 'Karina',
             'email' => 'k@email.com',
             'password' => Hash::make('karina'), // Menggunakan Hash untuk menyimpan password
@@ -64,6 +67,7 @@ class UserSeeder extends Seeder
         $user5->assignRole($role2);
 
         $user6 = User::create([
+            'karyawan_id' => 4,
             'name' => 'Bjorka',
             'email' => 'bj@email.com',
             'password' => Hash::make('bjorka'), // Menggunakan Hash untuk menyimpan password
@@ -72,6 +76,7 @@ class UserSeeder extends Seeder
         $user6->assignRole($role2);
 
         $user7 = User::create([
+            'karyawan_id' => 2,
             'name' => 'Ayu',
             'email' => 'a@email.com',
             'password' => Hash::make('ayu'), // Menggunakan Hash untuk menyimpan password
@@ -80,6 +85,7 @@ class UserSeeder extends Seeder
         $user7->assignRole($role2);
 
         $user8 = User::create([
+            'karyawan_id' => 5,
             'name' => 'P. Didy',
             'email' => 'p@email.com',
             'password' => Hash::make('ahhh'), // Menggunakan Hash untuk menyimpan password

@@ -15,12 +15,12 @@ class ThrPolicy
      */
     public function viewAny(User $user)
     {
-        // if($user->hasPermissionTo('View Posts')){
-        //     return true;
-        // }
-        // return false;
+        if($user->hasRoles('Super Admin')){
+            return true;
+        }
+        return false;
 
-        return true;
+        // return true;
     }
 
     /**
@@ -58,9 +58,9 @@ class ThrPolicy
      */
     public function delete(User $user, Thr $thr)
     {
-        if($user->hasRole('Super Admin')){
-            return true;
-        }
+        // if($user->hasRole('Super Admin')){
+        //     return true;
+        // }
         return false;
     }
 

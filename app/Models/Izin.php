@@ -31,6 +31,46 @@ class Izin extends Model
     {
         parent::booted();
 
+        static::created(function ($izin){
+            if ($izin->status == 'approved') {
+                // Pastikan start dan end diubah menjadi objek Carbon
+                $start = Carbon::parse($izin->start);
+                $end = Carbon::parse($izin->end);
+
+                // Hitung jumlah hari izin (termasuk hari pertama dan terakhir)
+                $totalDays = $end->diffInDays($start) + 1;
+
+                // Ambil jam kerja per hari dari tabel karyawan
+                $jamKerjaPerHari = DB::table('karyawans')
+                    ->join('posisis', 'karyawans.posisi_id', '=', 'posisis.id_posisi')
+                    ->where('karyawans.id_karyawan', $izin->karyawan_id)
+                    ->value('jam_kerja_per_hari');
+
+                // Ambil keterangan dari tabel izins berdasarkan id_izin yang sedang diupdate
+                $keterangan = $izin->keterangan;
+
+                // Iterasi setiap tanggal antara start dan end
+                for ($date = $start; $date <= $end; $date->addDay()) {
+                    // Formatkan tanggal untuk setiap row (tanggal pada absensi)
+                    $formattedDate = $date->toDateString();
+
+                    // Sisipkan data absensi ke tabel absen
+                    DB::table('absen')->insert([
+                        'karyawan_id' => $izin->karyawan_id,
+                        'tanggal' => $formattedDate,  // Gunakan tanggal yang diiterasi
+                        'hadir' => '00:00:00',  // Kolom hadir terisi dengan 00:00:00
+                        'jam_masuk' => null,  // Kolom jam_masuk terisi NULL
+                        'jam_keluar' => null,  // Kolom jam_keluar terisi NULL
+                        'izin' => $izin->jenis == 'izin' ? sprintf('%02d:%02d:%02d', floor($jamKerjaPerHari), ($jamKerjaPerHari - floor($jamKerjaPerHari)) * 60, 0) : '00:00:00',
+                        'sakit' => $izin->jenis == 'sakit' ? sprintf('%02d:%02d:%02d', floor($jamKerjaPerHari), ($jamKerjaPerHari - floor($jamKerjaPerHari)) * 60, 0) : '00:00:00',
+                        'keterangan' => $keterangan,
+                        'created_at' => now(),
+                        'updated_at' => now()
+                    ]);
+                }
+            }
+        });
+
         // Event 'updated' pada model Izin
         static::updated(function ($izin) {
             // Pastikan status izin diubah menjadi "approved"

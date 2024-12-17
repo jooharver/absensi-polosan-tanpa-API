@@ -14,9 +14,10 @@ class EditKaryawan extends EditRecord
     {
         return [
             Actions\DeleteAction::make(),
+            Actions\ViewAction::make(),
         ];
     }
-    
+
     protected function getRedirectUrl(): string
     {
         return $this->getResource()::getUrl('index');
