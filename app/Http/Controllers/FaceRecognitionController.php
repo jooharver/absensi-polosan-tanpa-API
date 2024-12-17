@@ -5,135 +5,124 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Karyawan;
 use Illuminate\Support\Facades\Log;
-use App\Http\Controllers\AbsenController;
+use App\Models\Absen;
+use Carbon\Carbon;
 
 class FaceRecognitionController extends Controller
 {
     public function recognize(Request $request)
     {
-        Log::info('Recognize method called.');
-
-        // Validate input
-        $request->validate([
-            'image' => 'required|string',
-        ]);
-
         try {
-            Log::info('Input validation passed.');
-
-            // Decode the base64 image
-            $imageData = $request->input('image');
-            $image = base64_decode($imageData);
-            if (!$image) {
-                Log::error('Failed to decode image data.');
+            // Validasi input
+            $request->validate(['image' => 'required|string']);
+    
+            // Decode dan simpan gambar sementara
+            $imageData = base64_decode($request->input('image'));
+            if (!$imageData) {
                 return response()->json(['status' => 'error', 'message' => 'Invalid image data.'], 400);
             }
-
-            Log::info('Image data decoded.');
-
-            // Save the image temporarily
-            $imageName = 'face_' . time() . '.jpg';
+    
             $tempDir = storage_path('app/public/temp');
-            if (!file_exists($tempDir)) {
-                mkdir($tempDir, 0755, true);
-            }
-            $imagePath = $tempDir . '/' . $imageName;
-            file_put_contents($imagePath, $image);
-
-            Log::info('Image saved to: ' . $imagePath);
-
-            // Get the currently logged-in user
+            if (!file_exists($tempDir)) mkdir($tempDir, 0755, true);
+    
+            $imagePath = $tempDir . '/face_' . time() . '.jpg';
+            file_put_contents($imagePath, $imageData);
+    
+            // Ambil pengguna dan face vector karyawan
             $user = \Illuminate\Support\Facades\Auth::user();
-            if (!$user) {
-                Log::error('No authenticated user found.');
-                return response()->json(['status' => 'error', 'message' => 'User tidak valid'], 401);
+            if (!$user || !$user->karyawan_id) {
+                unlink($imagePath); // Hapus file jika ada error
+                return response()->json(['status' => 'error', 'message' => 'User tidak valid.'], 500);
             }
-
-            // Get karyawan_id from the user
-            $karyawan_id = $user->karyawan_id;
-            if (!$karyawan_id) {
-                Log::error('No karyawan_id associated with user.');
-                return response()->json(
-                    ['status' => 'error',
-                     'message' => 'User tidak terkait dengan karyawan siapapun.'], 
-                     400);
-            }
-
-            // Retrieve the face vector from the database
-            $karyawan = Karyawan::find($karyawan_id);
+    
+            $karyawan = Karyawan::find($user->karyawan_id);
             if (!$karyawan || !$karyawan->face_vector) {
-                Log::error('No face vector found for karyawan_id: ' . $karyawan_id);
-                return response()->json(['status' => 'error', 'message' => 'No face vector found for user.'], 400);
-            }
-
-            // Save the face vector to a temporary JSON file
-            $faceVectorFilename = 'face_vector_' . time() . '.json';
-            $faceVectorFilePath = $tempDir . '/' . $faceVectorFilename;
-            file_put_contents($faceVectorFilePath, $karyawan->face_vector);
-
-            Log::info('Face vector saved to: ' . $faceVectorFilePath);
-
-            // Define the Python script path
-            $pythonScriptPath = base_path('scripts/recognize_face.py');
-            Log::info('Python script path: ' . $pythonScriptPath);
-
-            // Build the command
-            $command = "python3 " . escapeshellarg($pythonScriptPath) . " " . escapeshellarg($imagePath) . " " . escapeshellarg($faceVectorFilePath);
-            Log::info('Command to execute: ' . $command);
-
-            // Execute the command
-            $output = [];
-            $returnVar = 0;
-            exec($command, $output, $returnVar);
-
-            Log::info('Process output: ' . implode("\n", $output));
-            Log::info('Process exited with code: ' . $returnVar);
-
-            // Delete the temporary files
-            if (file_exists($imagePath)) {
                 unlink($imagePath);
-                Log::info('Temporary image deleted.');
+                return response()->json(['status' => 'error', 'message' => 'Face vector tidak ditemukan.'], 500);
             }
-            if (file_exists($faceVectorFilePath)) {
-                unlink($faceVectorFilePath);
-                Log::info('Temporary face vector file deleted.');
+    
+            // Simpan face vector sementara
+            $faceVectorPath = $tempDir . '/face_vector_' . time() . '.json';
+            file_put_contents($faceVectorPath, $karyawan->face_vector);
+    
+            // Jalankan Python script untuk mengenali wajah
+            $pythonScriptPath = base_path('scripts/recognize_face.py');
+            $command = "python3 " . escapeshellarg($pythonScriptPath) . " " . escapeshellarg($imagePath) . " " . escapeshellarg($faceVectorPath);
+            exec($command, $output, $returnVar);
+    
+            // Hapus file sementara
+            unlink($imagePath);
+            unlink($faceVectorPath);
+    
+            // Proses hasil Python script
+            if ($returnVar !== 0) {
+                return response()->json(['status' => 'error', 'message' => 'Proses pengenalan wajah gagal.'], 500);
             }
-
-            // Process the Python script output
+    
             $result = json_decode(implode("\n", $output), true);
-
-            if ($returnVar === 0 && $result && isset($result['matched'])) {
-                if ($result['matched'] === true) {
-                    Log::info('Face matched. Proceeding with attendance.');
-
-                    // Call recordAttendance method in AbsenController
-                    $absenController = new AbsenController();
-                    $absen = app('App\Http\Controllers\AbsenController')->recordAttendance($karyawan_id);
-
-                    // Remove hitungHadir call since it's handled by trigger
-                    return response()->json([
-                        'status' => 'success',
-                        'message' => 'Presensi berhasil.',
-                    ], 200);
-                } else {
-                    Log::info('Wajah tidak dikenali.');
-                    $errorDetails = $result['error'] ?? '';
-                    return response()->json(['status' => 'fail', 'message' => 'Face not recognized.', 'details' => $errorDetails], 401);
-                }
+            if (isset($result['matched']) && $result['matched'] === true) {
+                return $this->recordAttendance($user->karyawan_id);
             } else {
-                Log::error('Error executing Python script.');
-                $errorDetails = $result['error'] ?? 'Unknown error';
-                return response()->json([
-                    'status' => 'error',
-                    'message' => 'Proses pengenalan wajah gagal.',
-                    'details' => $errorDetails,
-                ], 500);
+                return response()->json(['status' => 'fail', 'message' => 'Wajah tidak dikenali.'], 500);
             }
         } catch (\Exception $e) {
-            Log::error('Exception caught in recognize method: ' . $e->getMessage());
             return response()->json(['status' => 'error', 'message' => $e->getMessage()], 500);
         }
     }
+    
+    private function recordAttendance($karyawan_id)
+    {
+        $today = Carbon::today();
+        $absen = Absen::where('karyawan_id', $karyawan_id)
+            ->where('tanggal', $today)
+            ->first();
+    
+        if (!$absen) {
+            $absen = new Absen();
+            $absen->karyawan_id = $karyawan_id;
+            $absen->tanggal = $today;
+            $absen->jam_masuk = Carbon::now();
+
+
+
+            // $absen->jam_masuk = Carbon::now()->subHours(1);
+            $message = 'Presensi masuk berhasil dicatat';
+            $type = 'check_in';
+            $time = $absen->jam_masuk;
+        } elseif (!$absen->jam_keluar) {
+            $absen->jam_keluar = Carbon::now();
+
+
+
+            // $absen->jam_keluar = Carbon::now()->subHours(1);
+            $message = 'Presensi pulang berhasil dicatat';
+            $type = 'check_out';
+            $time = $absen->jam_keluar;
+        } else {
+            // Jika sudah ada jam_masuk dan jam_keluar
+            return response()->json([
+                'status' => 'info',
+                'message' => 'Anda sudah presensi hari ini!',
+                'data' => [
+                    'check_in' => $absen->jam_masuk,
+                    'check_out' => $absen->jam_keluar,
+                ],
+            ], 500);
+        }
+    
+        // Simpan data baru atau update data lama
+        $absen->save();
+    
+        return response()->json([
+            'status' => 'success',
+            'message' => $message,
+            'data' => [
+                'type' => $type,
+                'time' => $time,
+            ],
+        ], 200);
+    }    
+    
 
     // Face add (from filament)
     public function saveFaceVector($imagePath, $id)
