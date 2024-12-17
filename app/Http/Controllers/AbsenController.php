@@ -5,6 +5,8 @@ use Mpdf\Mpdf;
 use App\Models\Absen;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\Log;
 
 class AbsenController extends Controller
 {
@@ -16,21 +18,11 @@ class AbsenController extends Controller
 
         // Pastikan user memiliki data karyawan terkait
         if (!$user || !$user->karyawans) {
-            return response()->json(['message' => 'Employee data not found'], 404);
+            return response()->json(['message' => 'Data karyawan tidak ditemukan'], 404);
         }
-
-        // Ambil bulan dan tahun dari request
-        $month = $request->query('month');
-        $year = $request->query('year');
 
         // Ambil absensi berdasarkan karyawan_id dan filter bulan dan tahun jika ada
-        $query = $user->karyawans->absen()->orderBy('tanggal', 'desc');
-
-        if ($month && $year) {
-            $query->whereMonth('tanggal', $month)->whereYear('tanggal', $year);
-        }
-
-        $history = $query->get();
+        $history = $user->karyawans->absen()->get();
 
         return response()->json([
             'karyawan' => $user->karyawans,
@@ -53,7 +45,6 @@ class AbsenController extends Controller
         // Unduh file PDF
         $mpdf->Output('Absensi.pdf', 'D');
     }
-
 
     public function index()
     {

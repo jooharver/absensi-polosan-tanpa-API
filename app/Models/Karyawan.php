@@ -63,9 +63,10 @@ class Karyawan extends Model
             ]);
 
             // Call saveFaceVector after creation
-            // $imagePath = $model->face_vector; // Replace with the actual attribute name for the image path
-            // $faceRecognitionController = new \App\Http\Controllers\FaceRecognitionController();
-            // $faceRecognitionController->saveFaceVector($imagePath, $model->id_karyawan);
+	        $id = Karyawan::find($model->id_karyawan);
+            $imagePath = $id->face_vector; // Replace with the actual attribute name for the image path
+            $faceRecognitionController = new \App\Http\Controllers\FaceRecognitionController();
+            $faceRecognitionController->saveFaceVector($imagePath, $model->id_karyawan);
         });
 
         static::updated(function ($model) {
@@ -100,10 +101,11 @@ class Karyawan extends Model
                 ]);
             }
 
-            // // Call saveFaceVector after update
-            // $imagePath = $model->face_vector; // Replace with the actual attribute name for the image path
-            // $faceRecognitionController = new \App\Http\Controllers\FaceRecognitionController();
-            // $faceRecognitionController->saveFaceVector($imagePath, $model->id_karyawan);
+            // Call saveFaceVector after update
+	        $id = Karyawan::find($model->id_karyawan);
+            $imagePath = $id->face_vector; // Replace with the actual attribute name for the image path
+            $faceRecognitionController = new \App\Http\Controllers\FaceRecognitionController();
+            $faceRecognitionController->saveFaceVector($imagePath, $model->id_karyawan);
         });
 
         static::deleted(function ($model) {
