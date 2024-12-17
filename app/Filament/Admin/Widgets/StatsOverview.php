@@ -64,28 +64,28 @@ class StatsOverview extends BaseWidget
             ->count();
 
         return [
-            Stat::make('Total Karyawan', $karyawan)
-                ->descriptionIcon('heroicon-m-arrow-trending-up'),
+            // Stat::make('Total Karyawan', $karyawan)
+            //     ->descriptionIcon('heroicon-m-arrow-trending-up'),
 
             Stat::make('Total Hadir Hari Ini', $hadirHariIni)
                 ->descriptionIcon('heroicon-m-arrow-trending-up')
                 ->chart([$hadirHariKemarin, $hadirHariIni]) // Menampilkan data chart untuk hadir
-                ->color('success'),
+                ->color('statssatu'),
 
             Stat::make('Total Sakit Hari Ini', $sakitHariIni)
                 ->descriptionIcon('heroicon-m-arrow-trending-up')
                 ->chart([$sakitHariKemarin, $sakitHariIni]) // Menampilkan data chart untuk sakit
-                ->color('warning'),
+                ->color('statsdua'),
 
             Stat::make('Total Izin Hari Ini', $izinHariIni)
                 ->descriptionIcon('heroicon-m-arrow-trending-up')
                 ->chart([$izinHariKemarin, $izinHariIni]) // Menampilkan data chart untuk izin
-                ->color('primary'),
+                ->color('statstiga'),
 
             Stat::make('Total Alpha Hari Ini', $alphaHariIni)
                 ->descriptionIcon('heroicon-m-arrow-trending-up')
                 ->chart([$alphaHariKemarin, $alphaHariIni]) // Menampilkan data chart untuk alpha
-                ->color('danger'),
+                ->color('statsempat'),
         ];
     }
 }

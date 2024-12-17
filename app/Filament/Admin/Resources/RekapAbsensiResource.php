@@ -25,6 +25,9 @@ class RekapAbsensiResource extends Resource
     {
         return $table
             ->columns([
+                Tables\Columns\TextColumn::make('bulan')
+                ->sortable()
+                ->date('M'),
                 Tables\Columns\TextColumn::make('karyawan.nama')
                     ->label('ID Karyawan')
                     ->sortable()

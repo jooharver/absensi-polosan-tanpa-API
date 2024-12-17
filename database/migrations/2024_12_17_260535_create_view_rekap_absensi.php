@@ -22,7 +22,9 @@ class CreateViewRekapAbsensi extends Migration
             FROM
                 absen
             GROUP BY
-                karyawan_id, bulan; -- Group berdasarkan karyawan dan bulan
+                karyawan_id, bulan -- Group berdasarkan karyawan dan bulan
+            ORDER BY
+                bulan ASC, karyawan_id ASC;
         ");
     }
 

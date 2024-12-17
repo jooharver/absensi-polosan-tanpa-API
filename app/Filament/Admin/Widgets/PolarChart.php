@@ -8,7 +8,7 @@ use Carbon\Carbon;
 
 class PolarChart extends ChartWidget
 {
-    protected static ?string $heading = 'Statistik Absensi Bulan Ini';
+    protected static ?string $heading = 'Statistik Presensi Bulan Ini';
 
     protected function getData(): array
     {
@@ -45,7 +45,7 @@ class PolarChart extends ChartWidget
                 [
                     'label' => 'Rekap Absensi Bulan Ini',
                     'data' => [$totalHadir, $totalSakit, $totalIzin, $totalAlpha],
-                    'backgroundColor' => ['#4CAF50', '#FFC107', '#2196F3', '#F44336'], // Warna kategori
+                    'backgroundColor' => ['#B2C9AD', '#91AC8F','#66785F' ,'#4B5945' ], // Warna kategori
                 ],
             ],
             'labels' => ['Hadir', 'Sakit', 'Izin', 'Alpha'],
@@ -54,6 +54,6 @@ class PolarChart extends ChartWidget
 
     protected function getType(): string
     {
-        return 'polarArea';
+        return 'pie';
     }
 }

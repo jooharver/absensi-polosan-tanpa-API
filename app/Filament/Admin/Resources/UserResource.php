@@ -35,9 +35,9 @@ class UserResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('name')
-                    ->required()
-                    ->maxLength(255),
+                Forms\Components\Select::make('nama')
+                ->relationship('karyawans', 'nama')->preload()
+                ->label('Nama Karyawan'),
                 Forms\Components\TextInput::make('email')
                     ->email()
                     ->required()
@@ -49,9 +49,7 @@ class UserResource extends Resource
                     ->password()
                     ->required()
                     ->maxLength(255),
-                Forms\Components\Select::make('nama')
-                    ->relationship('karyawans', 'nama')->preload()
-                    ->label('Nama Karyawan'),
+
             ]);
     }
 

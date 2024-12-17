@@ -19,7 +19,6 @@ class PosisiSeeder extends Seeder
             'hari_kerja_per_minggu' => '5',
             'jam_masuk' => '07:00',
             'jam_keluar' => '15:00',
-            'grace_period' => '00:15:00'
         ]);
 
         Posisi::create([
@@ -28,7 +27,6 @@ class PosisiSeeder extends Seeder
             'hari_kerja_per_minggu' => '6',
             'jam_masuk' => '06:00',
             'jam_keluar' => '14:00',
-            'grace_period' => '00:15:00'
         ]);
 
         Posisi::create([
@@ -37,7 +35,6 @@ class PosisiSeeder extends Seeder
             'hari_kerja_per_minggu' => '5',
             'jam_masuk' => '08:00',
             'jam_keluar' => '14:00',
-            'grace_period' => '00:15:00'
         ]);
     }
 }

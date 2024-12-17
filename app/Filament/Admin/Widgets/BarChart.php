@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\DB;
 
 class BarChart extends ChartWidget
 {
-    protected static ?string $heading = 'Rekap Absensi Alpha Tahun 2024';
+    protected static ?string $heading = 'Rekap Alpha atau Terlambat Tahun 2024';
 
     protected function getData(): array
     {
@@ -33,9 +33,19 @@ class BarChart extends ChartWidget
 
         // Daftar warna untuk setiap bulan (warna-warni)
         $colors = [
-            '#9E9E9E', '#E91E63', '#9C27B0', '#673AB7', '#3F51B5',
-            '#2196F3', '#03A9F4', '#00BCD4', '#009688', '#4CAF50',
-            '#8BC34A', '#CDDC39'
+            '#4B5945',
+            '#5C6C56',
+            '#6D7F67',
+            '#7E926F',
+            '#8F9D80',
+            '#A0B491',
+            '#B1C1A2',
+            '#A8C6A4',
+            '#B2C9AD',
+            '#9FBBA6',
+            '#96B1A8',
+            '#8DA6AA',
+
         ];
 
         // Pastikan jumlah warna sesuai dengan jumlah data (12 bulan)

@@ -34,6 +34,7 @@ class Izin extends Model
         // Event 'updated' pada model Izin
         static::updated(function ($izin) {
             // Pastikan status izin diubah menjadi "approved"
+            // Pastikan status izin diubah menjadi "approved"
             if ($izin->status == 'approved') {
                 // Pastikan start dan end diubah menjadi objek Carbon
                 $start = Carbon::parse($izin->start);
@@ -48,31 +49,72 @@ class Izin extends Model
                     ->where('karyawans.id_karyawan', $izin->karyawan_id)
                     ->value('jam_kerja_per_hari');
 
-                // Hitung total jam kerja untuk izin (dalam jam)
-                $totalJam = $jamKerjaPerHari * $totalDays;
+                // Ambil keterangan dari tabel izins berdasarkan id_izin yang sedang diupdate
+                $keterangan = $izin->keterangan;
 
-                // Konversi total jam ke format TIME (HH:MM:SS)
-                $hours = floor($totalJam);
-                $minutes = ($totalJam - $hours) * 60;
-                $seconds = 0; // karena kita hanya menghitung jam dan menit, detik adalah 0
+                // Iterasi setiap tanggal antara start dan end
+                for ($date = $start; $date <= $end; $date->addDay()) {
+                    // Formatkan tanggal untuk setiap row (tanggal pada absensi)
+                    $formattedDate = $date->toDateString();
 
-                // Formatkan total jam kerja ke TIME
-                $totalJamTime = sprintf('%02d:%02d:%02d', $hours, $minutes, $seconds);
+                    // Sisipkan data absensi ke tabel absen
+                    DB::table('absen')->insert([
+                        'karyawan_id' => $izin->karyawan_id,
+                        'tanggal' => $formattedDate,  // Gunakan tanggal yang diiterasi
+                        'hadir' => '00:00:00',  // Kolom hadir terisi dengan 00:00:00
+                        'jam_masuk' => null,  // Kolom jam_masuk terisi NULL
+                        'jam_keluar' => null,  // Kolom jam_keluar terisi NULL
+                        'izin' => $izin->jenis == 'izin' ? sprintf('%02d:%02d:%02d', floor($jamKerjaPerHari), ($jamKerjaPerHari - floor($jamKerjaPerHari)) * 60, 0) : '00:00:00',
+                        'sakit' => $izin->jenis == 'sakit' ? sprintf('%02d:%02d:%02d', floor($jamKerjaPerHari), ($jamKerjaPerHari - floor($jamKerjaPerHari)) * 60, 0) : '00:00:00',
+                        'keterangan' => $keterangan,
+                        'created_at' => now(),
+                        'updated_at' => now()
+                    ]);
+                }
+            }
+            // Mengambil data perubahan yang terjadi
+            $changes = $izin->getDirty();
+            $original = $izin->getOriginal();
 
-                // Sisipkan data absensi ke tabel absen
-                DB::table('absen')->insert([
-                    'karyawan_id' => $izin->karyawan_id,
-                    'tanggal' => now()->toDateString(), // tanggal sekarang
-                    'hadir' => '00:00:00',  // Kolom hadir terisi dengan 00:00:00
-                    'jam_masuk' => null,  // Kolom jam_masuk terisi NULL
-                    'jam_keluar' => null,  // Kolom jam_keluar terisi NULL
-                    'izin' => $izin->jenis == 'izin' ? $totalJamTime : '00:00:00',
-                    'sakit' => $izin->jenis == 'sakit' ? $totalJamTime : '00:00:00',
-                    'keterangan' => "Izin jenis {$izin->jenis} selama {$totalDays} hari",
-                    'created_at' => now(),
-                    'updated_at' => now()
+            // Variabel untuk menyimpan data 'from' dan 'to' dengan tambahan kolom id_izin dan nama (dari Karyawan)
+            $from = [
+                'id_izin' => $original['id_izin'],
+                'nama' => Karyawan::find($original['karyawan_id'])->nama, // Mengambil nama dari tabel Karyawan berdasarkan karyawan_id
+            ];
+
+            $to = [
+                'id_izin' => $izin->id_izin,
+                'nama' => Karyawan::find($izin->karyawan_id)->nama, // Mengambil nama dari tabel Karyawan berdasarkan karyawan_id
+            ];
+
+            // Melakukan iterasi untuk mengecek perubahan di kolom lain selain yang diabaikan (misalnya kolom tanggal atau timestamp)
+            foreach ($changes as $key => $value) {
+                // Mengabaikan kolom 'created_at', 'updated_at' dan kolom lain yang tidak perlu dicatat
+                if ($key !== 'created_at' && $key !== 'updated_at') {
+                    // Menyimpan perubahan yang relevan
+                    $from[$key] = $original[$key];
+                    $to[$key] = $value;
+                }
+            }
+
+            // Hanya mencatat perubahan yang relevan
+            if (!empty(array_diff_assoc($from, $to))) {
+                AdminActivityLog::create([
+                    'user_id' => auth()->id(), // ID pengguna yang melakukan perubahan
+                    'action' => 'update', // Jenis aksi
+                    'from' => json_encode($from), // Data sebelum perubahan
+                    'to' => json_encode($to), // Data setelah perubahan
                 ]);
             }
+        });
+
+        static::deleted(function ($izin) {
+            AdminActivityLog::create([
+                'user_id' => auth()->id(),
+                'action' => 'delete',
+                'from' => json_encode($izin->getAttributes()), // Menyimpan semua data saat dihapus
+                'to' => null, // Karena data ini dihapus
+            ]);
         });
     }
 

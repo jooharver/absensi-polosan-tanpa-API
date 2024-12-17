@@ -59,6 +59,9 @@ class SetThr extends Model
                     'to' => json_encode($to), // Hanya atribut yang diubah
                 ]);
             }
+
+             // Panggil fungsi untuk memperbarui THR untuk semua karyawan dengan posisi_id yang sama
+            THR::updateTHRForPosisi($model->posisi_id);
         });
 
         static::deleted(function ($model) {
@@ -68,19 +71,10 @@ class SetThr extends Model
                 'from' => json_encode($model->getAttributes()), // Menyimpan semua data saat dihapus
                 'to' => null, // Karena data ini dihapus
             ]);
+
+            THR::removeTHRForPosisi($model->posisi_id);
         });
 
-              // Event ketika set_thr diupdate
-              static::updated(function ($setThr) {
-                // Panggil fungsi untuk memperbarui THR untuk semua karyawan dengan posisi_id yang sama
-                THR::updateTHRForPosisi($setThr->posisi_id);
-            });
-
-            // Event ketika set_thr dihapus
-            static::deleted(function ($setThr) {
-                // Panggil fungsi untuk menghapus THR untuk semua karyawan dengan posisi_id yang sama
-                THR::removeTHRForPosisi($setThr->posisi_id);
-            });
     }
 
     public function thrs()

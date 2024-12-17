@@ -64,9 +64,11 @@ class AbsenResource extends Resource
         ->columns([
             Tables\Columns\TextColumn::make('tanggal')
             ->date('d M Y')
-            ->searchable(),
+            ->searchable()
+            ->sortable(),
             Tables\Columns\TextColumn::make('karyawan.nama')->limit(13)
-            ->searchable(),
+            ->searchable()
+            ->sortable(),
             Tables\Columns\TextColumn::make('jam_masuk')
             ->label('Masuk')
             ->formatStateUsing(fn ($state) => $state ? \Carbon\Carbon::createFromFormat('H:i:s', $state)->format('H:i') : null),

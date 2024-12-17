@@ -36,8 +36,8 @@ class LineChart extends ChartWidget
                 [
                     'label' => 'Total Kehadiran',
                     'data' => array_values($data), // Ambil nilai data per bulan
-                    'borderColor' => '#4CAF50', // Warna garis
-                    'backgroundColor' => 'rgba(76, 175, 80, 0.2)', // Warna latar belakang garis
+                    'borderColor' => '#4B5945', // Warna garis
+                    'backgroundColor' => '#B2C9AD', // Warna latar belakang garis
                     'fill' => true, // Mengisi area di bawah garis
                 ],
             ],
