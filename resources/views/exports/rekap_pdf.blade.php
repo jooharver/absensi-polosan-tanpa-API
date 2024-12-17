@@ -12,33 +12,27 @@
         }
 
         .kop {
-            flex-wrap: wrap;
-            flex-direction: row;
-            align-items:baseline;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;  /* Logo dan teks akan di kiri */
             margin-bottom: 20px;
+            width: 100%; /* Pastikan lebar penuh pada halaman */
         }
 
         .img {
-            width: 80px; /* Atur ulang ukuran logo */
-            height: auto; /* Memastikan aspek rasio tetap */
-            align-items: center;
+            width: 80px; /* Ukuran logo */
+            height: auto; /* Menjaga proporsi */
+            margin-right: 15px; /* Memberikan jarak antara logo dan teks */
+            flex: auto;
+            flex-direction: row;
         }
 
-        /* .tulisan {
-            text-align: center;
+        .tulisan {
             display: flex;
-        } */
+            flex-direction: column; /* Menyusun teks secara vertikal */
+            text-align: left;  /* Agar teks tetap rata kiri */
+        }
 
-        /* .kop h2 {
-            margin: 0;
-            color: black;
-            font-size: 24px;
-        } */
-
-        /* .kop p {
-            margin: 5px 0;
-            font-size: 14px;
-        } */
 
         .line {
             height: 4px;
@@ -52,6 +46,7 @@
             margin-top: 3px;
             margin-bottom: 20px;
         }
+
 
         /* Table styling */
         table {
@@ -91,9 +86,9 @@
             <img class="img" src="{{ url('images/logo.jpeg') }}" alt="logo">
         </div>
         <div class="tulisan">
-            <h2>PT. MENCARI CINTA SEJATI</h2>
-            <p>Jl. Kebahagiaan No. 1, Jakarta - Indonesia</p>
-            <p>Telepon: (021) 12345678 | Email: info@mencaricintasejati.co.id</p>
+            <h2>PR UD Putra Bintang Timur</h2>
+            <p>Jl. Imam Bonjol No. 885, RT. 004 RW. 008, Ardimulyo, Kec. Singosari, Kab. Malang - Jawa Timur 65153</p>
+            <p>Telepon: 0341-453456 | Email: prudputrabintangtimur@gmail.com</p>
         </div>
     </div>
     <div class="line"></div>
@@ -103,7 +98,7 @@
     </p>
 
     <!-- Title -->
-    <h2 style="text-align: center;">Rekapitulasi Absensi Karyawan {{ date('Y')}}</h2>
+    <h2 style="text-align: center;">Rekapitulasi Absensi Karyawan Tahun {{ date('Y')}}</h2>
 
     <!-- Table -->
     <table>

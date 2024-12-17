@@ -126,6 +126,10 @@ class CreateTriggerHitungHadirAlpha extends Migration
 
                 -- 3. Hitung durasi hadir
                 SET durasiHadir = TIMEDIFF(jamKeluar, jamMasuk);
+                -- Kondisi: Jika durasi hadir lebih kecil dari 00:00:00, set ke 00:00:00
+                IF TIME_TO_SEC(durasiHadir) < 0 THEN
+                    SET durasiHadir = '00:00:00';
+                END IF;
 
                 -- 4. Batasi durasi hadir sesuai dengan jam kerja per hari
                 IF TIME_TO_SEC(durasiHadir) > jamKerjaPerHari * 3600 THEN
