@@ -19,12 +19,12 @@ class DatabaseSeeder extends Seeder
         $this->call([
             PosisiSeeder::class,
             KaryawanSeeder::class,
+            PermissionsSeeder::class,
+            RolesSeeder::class,
             UserSeeder::class,
             AbsenSeeder::class,
             SetThrSeeder::class,
             AdminActivityLogSeeder::class,
-            PermissionsSeeder::class,
-            RolesSeeder::class,
             OfficeSeeder::class,
             IzinSeeder::class,
 

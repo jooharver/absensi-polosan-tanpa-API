@@ -26,11 +26,12 @@
             flex: auto;
             flex-direction: row;
         }
+        .gambarKop {
+            flex: 1;
+        }
 
         .tulisan {
-            display: flex;
-            flex-direction: column; /* Menyusun teks secara vertikal */
-            text-align: left;  /* Agar teks tetap rata kiri */
+            flex: 2;   /* Agar teks tetap rata kiri */
         }
 
 
@@ -82,7 +83,7 @@
 <body>
     <!-- Kop Surat -->
     <div class="kop">
-        <div>
+        <div class="gambarKop">
             <img class="img" src="{{ url('images/logo.jpeg') }}" alt="logo">
         </div>
         <div class="tulisan">
