@@ -6,4 +6,57 @@
 
 * {
     font-family: 'Inter', sans-serif;
+
+
+
+    .profile-container {
+        display: flex;
+        justify-content: center; /* Tetap sejajar secara horizontal */
+        align-items: center;    /* Tetap sejajar secara vertikal */
+        gap: calc(20px + 20px);  /* Perbesar jarak antar elemen sebesar 5px lebih lebar */
+        padding: 60px;          /* Ruang di sekeliling container */
+        background-color: #f9f9f9; /* Latar belakang */
+    }
+
+
+
+/* Styling untuk profile-card */
+.profile-card {
+    text-align: center; /* Teks di tengah */
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px; /* Membuat sudut rounded */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Efek bayangan */
+    width: calc(190px + 70px); /* Tambahkan 5px pada lebar asli */
+}
+
+
+/* Styling untuk gambar */
+/* Styling untuk gambar */
+.profile-card img {
+    display: block; /* Pastikan gambar diperlakukan sebagai blok */
+    margin: 0 auto; /* Mengatur gambar di tengah secara horizontal */
+    width: 100px;
+    height: 100px;
+    border-radius: 50%; /* Membuat gambar menjadi lingkaran */
+    margin-bottom: 15px; /* Jarak bawah antara gambar dan teks */
+}
+
+
+/* Styling untuk nama */
+.profile-card h4 {
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+    color: #333;
+}
+
+/* Styling untuk footer */
+.profile-card footer {
+    font-size: 0.9rem;
+    color: #777;
+}
+
+
+
+
 }

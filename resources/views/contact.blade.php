@@ -19,7 +19,7 @@
 >
     <a href="/" class="logo justify-self-start flex gap-2 items-center">
         <img src="{{asset('assets/logo.png')}}" class="w-8" alt=""/>
-        <h1 class="tracking-wide font-bold text-[#17A2B8]">SMK</h1>
+        <h1 class="tracking-wide font-bold text-[#17A2B8]">PresenSee</h1>
     </a>
 
     <!-- Hamburger Menu -->
@@ -87,7 +87,7 @@
     <section class="mb-10">
         <h2 class="text-2xl font-bold text-cyan-800 mb-4">Tentang Kami</h2>
         <p class="leading-7">
-            Sistem Manajemen Karyawan (SMK) adalah platform digital yang dirancang untuk mempermudah perusahaan
+            PresenSee adalah platform digital yang dirancang untuk mempermudah perusahaan
             dalam mengelola data karyawan, absensi, rekapitulasi, pengelolaan akun, hingga pengelolaan
             Tunjangan
             Hari Raya (THR). SMK memberikan solusi terintegrasi untuk meningkatkan efisiensi dan akurasi dalam
@@ -98,7 +98,7 @@
     <!-- Kenapa Memilih SMK -->
     <section class="flex justify-between max-md:flex-col gap-8">
         <div>
-            <h3 class="text-xl font-semibold text-cyan-800 mb-3">Kenapa Memilih SMK?</h3>
+            <h3 class="text-xl font-semibold text-cyan-800 mb-3">Kenapa Memilih PresenSee?</h3>
             <div class="flex flex-col gap-6">
                 <div
                     class="bg-white shadow-lg rounded-lg p-6 flex gap-4 hover:scale-105 transition duration-300 ease-in-out">
