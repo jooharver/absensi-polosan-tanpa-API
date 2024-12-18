@@ -15,7 +15,8 @@ use App\Http\Controllers\KaryawanController;
 
 
 Route::get('/', function () {
-    return view('welcome');
+	// return view('welcome');
+	return redirect('/admin');
 });
 
 Route::get('/contact', function () {
