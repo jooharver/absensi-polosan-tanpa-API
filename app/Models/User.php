@@ -19,7 +19,6 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $fillable = [
-        'name',
         'email',
         'password',
         'karyawan_id'
@@ -84,11 +83,16 @@ class User extends Authenticatable
         });
 
         static::created(function ($model) {
+            // Pastikan password tidak dimasukkan dalam activity log saat create
+            $attributes = $model->getAttributes();
+            // Hilangkan password dari atribut yang dicatat
+            unset($attributes['password']);
+
             AdminActivityLog::create([
                 'user_id' => auth()->id(),
                 'action' => 'create',
                 'from' => null, // Karena ini adalah penambahan
-                'to' => json_encode($model->getAttributes()),
+                'to' => json_encode($attributes),
             ]);
         });
 
@@ -96,16 +100,24 @@ class User extends Authenticatable
             $changes = $model->getChanges();
             $original = $model->getOriginal();
 
-            $from = ['id'];
+            $from = [];
             $to = [];
 
+            // Periksa perubahan untuk setiap kolom
             foreach ($changes as $key => $value) {
-                if ($key !== 'tanggal_masuk' && !in_array($key, ['created_at', 'updated_at'])) {
+                // Jangan tampilkan kolom password pada activity log
+                if ($key === 'password') {
+                    // Hanya mencatat perubahan password tanpa nilai baru dan lama
+                    $from[$key] = 'updated'; // Tidak tampilkan nilai password
+                    $to[$key] = 'updated';   // Tidak tampilkan nilai password
+                } elseif ($key !== 'tanggal_masuk' && !in_array($key, ['created_at', 'updated_at'])) {
+                    // Untuk kolom lainnya, tampilkan perubahan dari dan ke nilai
                     $from[$key] = $original[$key];
                     $to[$key] = $value;
                 }
             }
 
+            // Pastikan hanya mencatat perubahan yang relevan
             if (!empty($from) || !empty($to)) {
                 AdminActivityLog::create([
                     'user_id' => auth()->id(),
@@ -115,6 +127,7 @@ class User extends Authenticatable
                 ]);
             }
         });
+
 
         static::deleted(function ($model) {
             AdminActivityLog::create([

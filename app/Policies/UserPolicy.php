@@ -14,13 +14,13 @@ class UserPolicy
      */
     public function viewAny(User $user)
     {
-        // if($user->hasPermissionTo('View Posts')){
-        //     return true;
-        // }
+        if($user->hasPermissionTo('View Posts')){
+            return true;
+        }
 
-        // return false;
+        return false;
 
-        return true;
+        // return true;
     }
 
     /**

@@ -3,6 +3,7 @@
 namespace App\Filament\Admin\Resources\KaryawanResource\Pages;
 
 use App\Filament\Admin\Resources\KaryawanResource;
+use App\Filament\Admin\Resources\KaryawanResource\Widgets\KaryawanStats;
 use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
 
@@ -16,6 +17,13 @@ class ListKaryawans extends ListRecords
             Actions\CreateAction::make()
             ->label('New Karyawan')
             ->icon('heroicon-o-plus'),
+        ];
+    }
+
+    protected function getHeaderWidgets() : array
+    {
+        return [
+            KaryawanStats::class,
         ];
     }
 }

@@ -2,8 +2,13 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\Izin;
+use App\Models\User;
+use App\Models\Absen;
+use App\Models\Posisi;
+use App\Models\AdminActivityLog;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Karyawan extends Model
 {
@@ -41,6 +46,10 @@ class Karyawan extends Model
         return $this->hasMany(Absen::class, 'karyawan_id', 'id_karyawan');
     }
 
+    public function izin(){
+        return $this->hasMany(Izin::class, 'karyawan_id', 'id_karyawan');
+    }
+
     protected static function boot()
     {
         parent::boot();
@@ -54,9 +63,10 @@ class Karyawan extends Model
             ]);
 
             // Call saveFaceVector after creation
-            // $imagePath = $model->face_vector; // Replace with the actual attribute name for the image path
-            // $faceRecognitionController = new \App\Http\Controllers\FaceRecognitionController();
-            // $faceRecognitionController->saveFaceVector($imagePath, $model->id_karyawan);
+	        $id = Karyawan::find($model->id_karyawan);
+            $imagePath = $id->face_vector; // Replace with the actual attribute name for the image path
+            $faceRecognitionController = new \App\Http\Controllers\FaceRecognitionController();
+            $faceRecognitionController->saveFaceVector($imagePath, $model->id_karyawan);
         });
 
         static::updated(function ($model) {
@@ -91,10 +101,11 @@ class Karyawan extends Model
                 ]);
             }
 
-            // // Call saveFaceVector after update
-            // $imagePath = $model->face_vector; // Replace with the actual attribute name for the image path
-            // $faceRecognitionController = new \App\Http\Controllers\FaceRecognitionController();
-            // $faceRecognitionController->saveFaceVector($imagePath, $model->id_karyawan);
+            // Call saveFaceVector after update
+	        $id = Karyawan::find($model->id_karyawan);
+            $imagePath = $id->face_vector; // Replace with the actual attribute name for the image path
+            $faceRecognitionController = new \App\Http\Controllers\FaceRecognitionController();
+            $faceRecognitionController->saveFaceVector($imagePath, $model->id_karyawan);
         });
 
         static::deleted(function ($model) {

@@ -14,7 +14,6 @@ class CreatePosisisTable extends Migration
             $table->integer('hari_kerja_per_minggu');
             $table->time('jam_masuk')->default(null);
             $table->time('jam_keluar')->default(null);
-            $table->time('grace_period')->default(null);
             $table->timestamps();
         });
     }

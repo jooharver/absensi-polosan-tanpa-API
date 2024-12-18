@@ -22,4 +22,4 @@ Route::middleware('auth:sanctum')->get('/rekap-absensi', [RekapController::class
 Route::middleware('auth:sanctum')->get('/karyawan', [KaryawanController::class, 'show']);
 
 // face recognition
-Route::post('/face-recognition', [FaceRecognitionController::class, 'recognize']);
+Route::middleware('auth:sanctum')->post('/face-recognition',[FaceRecognitionController::class, 'recognize']);
