@@ -19,12 +19,13 @@ class DatabaseSeeder extends Seeder
         $this->call([
             PosisiSeeder::class,
             KaryawanSeeder::class,
-            PermissionsSeeder::class,
-            RolesSeeder::class,
             UserSeeder::class,
             AbsenSeeder::class,
             SetThrSeeder::class,
-            IzinSeeder::class,
+            AdminActivityLogSeeder::class,
+            PermissionsSeeder::class,
+            RolesSeeder::class,
+            OfficeSeeder::class,
 
         ]);
 
@@ -33,7 +34,7 @@ class DatabaseSeeder extends Seeder
             'email' => 'admin@example.com',
             'password' => Hash::make('admin')
         ]);
-        $role = 'Super Admin';
+        $role = Role::create(['name' => 'Admin']);
         $user->assignRole($role);
         // $permission = Permission::create(['name' => 'edit articles']);
     }

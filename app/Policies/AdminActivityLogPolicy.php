@@ -13,11 +13,11 @@ class AdminActivityLogPolicy
      */
     public function viewAny(User $user)
     {
-        if($user->hasPermissionTo('View Posts')){
-            return true;
-        }
-        return false;
-        // return true;
+        // if($user->hasPermissionTo('View Posts')){
+        //     return true;
+        // }
+        // return false;
+        return true;
     }
 
     /**
@@ -65,6 +65,9 @@ class AdminActivityLogPolicy
      */
     public function forceDelete(User $user, AdminActivityLog $adminActivityLog)
     {
-
+        if($user->hasPermissionTo('Delete Posts')){
+            return true;
+        }
+        return false;
     }
 }

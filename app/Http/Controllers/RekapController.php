@@ -40,12 +40,8 @@ class RekapController extends Controller
                 ], 404);
             }
 
-            $currentMonth = date('Y-m');
-
             // Cari rekap berdasarkan karyawan_id
-            $rekap = RekapAbsensiView::where('karyawan_id', $user->karyawans->id_karyawan)
-                ->where('bulan', $currentMonth)
-                ->first();
+            $rekap = RekapAbsensiView::where('karyawan_id', $user->karyawans->id_karyawan)->first();
 
             if (!$rekap) {
                 return response()->json([

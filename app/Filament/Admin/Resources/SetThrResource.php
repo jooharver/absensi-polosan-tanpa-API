@@ -57,9 +57,7 @@ class SetThrResource extends Resource
                 Tables\Columns\TextColumn::make('posisi.posisi')
                 ->searchable(),
                 Tables\Columns\TextColumn::make('besaran_thr')
-                ->label('Nominal')
-                ->formatStateUsing(fn (string $state): string => 'Rp ' . number_format($state, 0, ',', '.')),
-
+                ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()

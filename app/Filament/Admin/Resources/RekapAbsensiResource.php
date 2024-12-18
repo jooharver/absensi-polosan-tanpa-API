@@ -25,16 +25,10 @@ class RekapAbsensiResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('bulan')
-                ->sortable()
-                ->date('M'),
                 Tables\Columns\TextColumn::make('karyawan.nama')
                     ->label('ID Karyawan')
                     ->sortable()
                     ->searchable(),
-                Tables\Columns\TextColumn::make('bulan')
-                    ->label('Bulan')
-                    ->sortable(),                
                 Tables\Columns\TextColumn::make('total_hadir')
                     ->label('Total Hadir')
                     ->sortable(),

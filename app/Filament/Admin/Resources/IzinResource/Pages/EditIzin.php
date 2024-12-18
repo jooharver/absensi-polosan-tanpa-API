@@ -10,8 +10,10 @@ class EditIzin extends EditRecord
 {
     protected static string $resource = IzinResource::class;
 
-    protected function getRedirectUrl(): string
+    protected function getHeaderActions(): array
     {
-        return $this->getResource()::getUrl('index');
+        return [
+            Actions\DeleteAction::make(),
+        ];
     }
 }

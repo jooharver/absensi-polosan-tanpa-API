@@ -26,7 +26,7 @@ class AbsenResource extends Resource
 
     protected static ?string $navigationLabel = 'Absensi';
 
-    protected static ?string $pluralLabel = 'Absensi';
+    protected static ?string $pluralLabel = 'Kelola Absensi';
     protected static ?int $navigationSort = 2;
     protected static ?string $navigationGroup = 'Administrasi';
 
@@ -44,8 +44,7 @@ class AbsenResource extends Resource
                 ->required()
                 ->label('Tanggal'),
                 Forms\Components\Select::make('karyawan_id')
-                ->relationship('karyawan', 'nama')->preload()
-                ->searchable()
+                ->relationship('karyawan', 'nama')
                 ->required(),
                 Forms\Components\TextInput::make('sakit')
                 ->default('00:00:00'),
@@ -62,29 +61,14 @@ class AbsenResource extends Resource
     {
         return $table
         ->columns([
-            Tables\Columns\TextColumn::make('tanggal')
-            ->date('d M Y')
-            ->searchable()
-            ->sortable(),
-            Tables\Columns\TextColumn::make('karyawan.nama')->limit(13)
-            ->searchable()
-            ->sortable(),
-            Tables\Columns\TextColumn::make('jam_masuk')
-            ->label('Masuk')
-            ->formatStateUsing(fn ($state) => $state ? \Carbon\Carbon::createFromFormat('H:i:s', $state)->format('H:i') : null),
-            Tables\Columns\TextColumn::make('jam_keluar')
-            ->label('Keluar')
-            ->formatStateUsing(fn ($state) => $state ? \Carbon\Carbon::createFromFormat('H:i:s', $state)->format('H:i') : null),
-            Tables\Columns\TextColumn::make('hadir')
-            ->default('00:00:00')
-            ->formatStateUsing(fn ($state) => $state ? \Carbon\Carbon::createFromFormat('H:i:s', $state)->format('H:i') : null),
-            Tables\Columns\TextColumn::make('sakit')
-            ->formatStateUsing(fn ($state) => $state ? \Carbon\Carbon::createFromFormat('H:i:s', $state)->format('H:i') : null),
-            Tables\Columns\TextColumn::make('izin')
-            ->formatStateUsing(fn ($state) => $state ? \Carbon\Carbon::createFromFormat('H:i:s', $state)->format('H:i') : null),
-            Tables\Columns\TextColumn::make('alpha')
-            ->formatStateUsing(fn ($state) => $state ? \Carbon\Carbon::createFromFormat('H:i:s', $state)->format('H:i') : null),
-            Tables\Columns\TextColumn::make('keterangan')->limit(15),
+            Tables\Columns\TextColumn::make('tanggal'),
+            Tables\Columns\TextColumn::make('karyawan.nama'),
+            Tables\Columns\TextColumn::make('jam_masuk'),
+            Tables\Columns\TextColumn::make('jam_keluar'),
+            Tables\Columns\TextColumn::make('hadir'),
+            Tables\Columns\TextColumn::make('sakit'),
+            Tables\Columns\TextColumn::make('izin'),
+            Tables\Columns\TextColumn::make('alpha'),
 
             Tables\Columns\TextColumn::make('created_at')
                 ->dateTime()
@@ -94,8 +78,7 @@ class AbsenResource extends Resource
                 ->dateTime()
                 ->sortable()
                 ->toggleable(isToggledHiddenByDefault: true),
-        ])->paginated([20])
-
+        ])
         ->headerActions([
             Tables\Actions\Action::make('Export Excel')
                 ->label('Export Excel')
@@ -109,102 +92,14 @@ class AbsenResource extends Resource
                 ->icon('heroicon-o-arrow-down-tray')
                 ->openUrlInNewTab(),
         ])
-        ->filters([
-            Tables\Filters\Filter::make('tanggal_hari_ini')
-                ->label('Hari Ini')
-                ->query(fn (Builder $query) => $query->whereDate('tanggal', Carbon::today())),
 
-            Tables\Filters\Filter::make('kemarin')
-                ->label('Kemarin')
-                ->query(fn (Builder $query) => $query->whereDate('tanggal', Carbon::yesterday())),
-
-            Tables\Filters\Filter::make('seminggu_terakhir')
-            ->label('Seminggu Terakhir')
-            ->query(fn (Builder $query) => $query->whereBetween('tanggal', [
-                Carbon::today()->subDays(6), // 6 hari sebelumnya
-                Carbon::today() // Hari ini
-            ])),
-
-            Tables\Filters\Filter::make('sebulan_terakhir')
-            ->label('Sebulan Terakhir')
-            ->query(fn (Builder $query) => $query->whereBetween('tanggal', [
-                Carbon::today()->subDays(29), // 29 hari sebelumnya
-                Carbon::today() // Hari ini
-            ])),
-
-            Tables\Filters\Filter::make('tahun_ini')
-            ->label('Tahun Ini')
-            ->query(fn (Builder $query) => $query->whereYear('tanggal', Carbon::now()->year)),
-
-            // Filter untuk bulan Januari
-            Tables\Filters\Filter::make('bulan_januari')
-                ->label('Januari')
-                ->query(fn (Builder $query) => $query->whereMonth('tanggal', 1)),
-
-            Tables\Filters\Filter::make('bulan_februari')
-                ->label('Februari')
-                ->query(fn (Builder $query) => $query->whereMonth('tanggal', 2)),
-
-            Tables\Filters\Filter::make('bulan_maret')
-                ->label('Maret')
-                ->query(fn (Builder $query) => $query->whereMonth('tanggal', 3)),
-
-            Tables\Filters\Filter::make('bulan_april')
-                ->label('April')
-                ->query(fn (Builder $query) => $query->whereMonth('tanggal', 4)),
-
-            Tables\Filters\Filter::make('bulan_juni')
-                ->label('Mei')
-                ->query(fn (Builder $query) => $query->whereMonth('tanggal', 5)),
-
-            Tables\Filters\Filter::make('bulan_juli')
-                ->label('Juni')
-                ->query(fn (Builder $query) => $query->whereMonth('tanggal', 6)),
-
-            Tables\Filters\Filter::make('bulan_juli')
-                ->label('Juli')
-                ->query(fn (Builder $query) => $query->whereMonth('tanggal', 7)),
-
-            Tables\Filters\Filter::make('bulan_agustus')
-                ->label('Agustus')
-                ->query(fn (Builder $query) => $query->whereMonth('tanggal', 8)),
-
-            Tables\Filters\Filter::make('bulan_september')
-                ->label('September')
-                ->query(fn (Builder $query) => $query->whereMonth('tanggal', 9)),
-
-            Tables\Filters\Filter::make('bulan_oktober')
-                ->label('Oktober')
-                ->query(fn (Builder $query) => $query->whereMonth('tanggal', 10)),
-
-            Tables\Filters\Filter::make('bulan_november')
-                ->label('November')
-                ->query(fn (Builder $query) => $query->whereMonth('tanggal', 11)),
-
-            Tables\Filters\Filter::make('bulan_desember')
-                ->label('Desember')
-                ->query(fn (Builder $query) => $query->whereMonth('tanggal', 12)),
-
-            Tables\Filters\Filter::make('status_hadir')
-                ->label('Hadir')
-                ->query(fn (Builder $query) => $query->where('hadir', '!=', '00:00:00')),
-
-            Tables\Filters\Filter::make('status_sakit')
-                ->label('Sakit')
-                ->query(fn (Builder $query) => $query->where('sakit', '!=', '00:00:00')),
-
-            Tables\Filters\Filter::make('status_izin')
-                ->label('Izin')
-                ->query(fn (Builder $query) => $query->where('izin', '!=', '00:00:00')),
-
-            Tables\Filters\Filter::make('status_alpa')
-                ->label('Alpha')
-                ->query(fn (Builder $query) => $query->where('alpha', '!=', '00:00:00')),
-        ])
-        ->actions([
+            ->filters([
+                //
+            ])
+            ->actions([
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
-        ]);
+            ]);
     }
 
 

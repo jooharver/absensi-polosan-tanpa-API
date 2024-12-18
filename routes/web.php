@@ -16,7 +16,11 @@ use App\Http\Controllers\KaryawanController;
 
 Route::get('/', function () {
 	// return view('welcome');
-	return redirect('/admin');
+	return view('welcome');
+});
+
+Route::get('/contact', function () {
+    return view('contact');
 });
 
 Route::get('/export-karyawan', function () {

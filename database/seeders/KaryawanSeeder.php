@@ -14,13 +14,13 @@ class KaryawanSeeder extends Seeder
     {
         Karyawan::create([
             'nik' => '3507123673849209',
-            'nama' => 'Budie Arie S.',
+            'nama' => 'Budie Arie Setiadi',
             'tanggal_lahir' => '1987-08-07',
             'jenis_kelamin' => 'Laki-laki',
             'alamat' => 'Jl. Pahlawan No. 1',
             'agama' => 'Islam',
             'no_telepon' => '081234567890',
-            'email' => 'budie@email.com',
+            'email' => 'kominfo@email.com',
             'posisi_id' => 1,
         ]);
 

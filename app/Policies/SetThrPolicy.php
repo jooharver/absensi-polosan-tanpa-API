@@ -15,7 +15,7 @@ class SetThrPolicy
      */
     public function viewAny(User $user)
     {
-        if($user->hasRoles('Super Admin')){
+        if($user->hasPermissionTo('View Posts')){
             return true;
         }
         return false;

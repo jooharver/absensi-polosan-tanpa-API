@@ -10,7 +10,7 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Model;
 
-class Thr extends Model
+class THR extends Model
 {
     protected $table = 'thrs';
     protected $primaryKey = 'id_thr'; // Set primary key menjadi id_thr
@@ -57,15 +57,14 @@ class Thr extends Model
             ->selectRaw("
                 SUM(TIME_TO_SEC(hadir)) / 60 as total_hadir,
                 SUM(TIME_TO_SEC(sakit)) / 60 as total_sakit,
-                SUM(TIME_TO_SEC(izin)) / 60 as total_izin,
-                SUM(TIME_TO_SEC(alpha)) / 60 as total_alpha
+                SUM(TIME_TO_SEC(izin)) / 60 as total_izin
             ")
             ->first();
 
         if (!$totalDurasi || ($totalDurasi->total_hadir + $totalDurasi->total_sakit + $totalDurasi->total_izin) == 0) {
             // Jika tidak ada data, kembalikan lebih awal
             return;
-        }
+        }a
 
         // Total durasi kerja aktual (dalam menit)
         $totalDurasiKerja = $totalDurasi->total_hadir + $totalDurasi->total_sakit + $totalDurasi->total_izin;

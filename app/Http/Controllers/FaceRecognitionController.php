@@ -5,124 +5,105 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Karyawan;
 use Illuminate\Support\Facades\Log;
-use App\Models\Absen;
-use Carbon\Carbon;
+use Illuminate\Support\Facades\Validator;
+use Symfony\Component\Process\Exception\ProcessFailedException;
 
 class FaceRecognitionController extends Controller
 {
     public function recognize(Request $request)
     {
+        Log::info('Recognize method called.');
+
+        // Validate input
+        $request->validate([
+            'image' => 'required|string',
+        ]);
+
         try {
-            // Validasi input
-            $request->validate(['image' => 'required|string']);
-    
-            // Decode dan simpan gambar sementara
-            $imageData = base64_decode($request->input('image'));
-            if (!$imageData) {
-                return response()->json(['status' => 'error', 'message' => 'Invalid image data.'], 400);
-            }
-    
-            $tempDir = storage_path('app/public/temp');
-            if (!file_exists($tempDir)) mkdir($tempDir, 0755, true);
-    
-            $imagePath = $tempDir . '/face_' . time() . '.jpg';
-            file_put_contents($imagePath, $imageData);
-    
-            // Ambil pengguna dan face vector karyawan
-            $user = \Illuminate\Support\Facades\Auth::user();
-            if (!$user || !$user->karyawan_id) {
-                unlink($imagePath); // Hapus file jika ada error
-                return response()->json(['status' => 'error', 'message' => 'User tidak valid.'], 500);
-            }
-    
-            $karyawan = Karyawan::find($user->karyawan_id);
-            if (!$karyawan || !$karyawan->face_vector) {
-                unlink($imagePath);
-                return response()->json(['status' => 'error', 'message' => 'Face vector tidak ditemukan.'], 500);
-            }
-    
-            // Simpan face vector sementara
-            $faceVectorPath = $tempDir . '/face_vector_' . time() . '.json';
-            file_put_contents($faceVectorPath, $karyawan->face_vector);
-    
-            // Jalankan Python script untuk mengenali wajah
+            Log::info('Input validation passed.');
+
+            // Decode the base64 image
+            $imageData = $request->input('image');
+            $image = base64_decode($imageData);
+
+            Log::info('Image data decoded.');
+
+            // Save the image temporarily
+            $imageName = 'face_' . time() . '.jpg';
+            $imagePath = base_path('public/faces/' . $imageName);
+            file_put_contents($imagePath, $image);
+
+            Log::info('Image saved to: ' . $imagePath);
+
+            // Define the Python script path
             $pythonScriptPath = base_path('scripts/recognize_face.py');
-            $command = "python3 " . escapeshellarg($pythonScriptPath) . " " . escapeshellarg($imagePath) . " " . escapeshellarg($faceVectorPath);
-            exec($command, $output, $returnVar);
-    
-            // Hapus file sementara
-            unlink($imagePath);
-            unlink($faceVectorPath);
-    
-            // Proses hasil Python script
-            if ($returnVar !== 0) {
-                return response()->json(['status' => 'error', 'message' => 'Proses pengenalan wajah gagal.'], 500);
-            }
-    
-            $result = json_decode(implode("\n", $output), true);
-            if (isset($result['matched']) && $result['matched'] === true) {
-                return $this->recordAttendance($user->karyawan_id);
+
+            Log::info('Python script path: ' . $pythonScriptPath);
+
+            // Build the command
+            $command = ["python3", $pythonScriptPath, $imagePath];
+            Log::info('Command to execute: ' . implode(' ', $command));
+
+            // Prepare descriptors for stdout and stderr
+            $descriptors = [
+                1 => ['pipe', 'w'], // stdout
+                2 => ['pipe', 'w'], // stderr
+            ];
+
+            // Open the process
+            $process = proc_open($command, $descriptors, $pipes);
+
+            if (is_resource($process)) {
+                Log::info('Process opened successfully.');
+
+                // Capture stdout and stderr
+                $output = stream_get_contents($pipes[1]); // stdout
+                $error = stream_get_contents($pipes[2]); // stderr
+
+                Log::info('Process output: ' . $output);
+                Log::error('Process error output: ' . $error);
+
+                // Close the pipes
+                fclose($pipes[1]);
+                fclose($pipes[2]);
+
+                // Close the process and get the exit code
+                $exitCode = proc_close($process);
+
+                Log::info('Process exited with code: ' . $exitCode);
+
+                // Process the Python script output
+                if ($exitCode === 0) {
+                    Log::info('Python script executed successfully.');
+
+                    $result = json_decode($output, true);
+
+                    Log::info('Decoded result: ' . json_encode($result));
+
+                    if ($result && isset($result['matched']) && $result['matched'] === true) {
+                        Log::info('Face matched. Presence accepted.');
+                        return response()->json(['status' => 'success', 'message' => 'Face matched. Presence accepted.']);
+                    } else {
+                        Log::info('Face not recognized.');
+                        return response()->json(['status' => 'fail', 'message' => 'Face not recognized.'], 401);
+                    }
+                } else {
+                    Log::error('Error executing Python script.');
+                    return response()->json([
+                        'status' => 'error',
+                        'message' => 'Error executing Python script.',
+                        'details' => $error,
+                    ], 500);
+                }
             } else {
-                return response()->json(['status' => 'fail', 'message' => 'Wajah tidak dikenali.'], 500);
+                Log::error('Unable to open process.');
+                return response()->json(['status' => 'error', 'message' => 'Unable to open process.'], 500);
             }
         } catch (\Exception $e) {
+            Log::error('Exception caught in recognize method: ' . $e->getMessage());
             return response()->json(['status' => 'error', 'message' => $e->getMessage()], 500);
         }
     }
-    
-    private function recordAttendance($karyawan_id)
-    {
-        $today = Carbon::today();
-        $absen = Absen::where('karyawan_id', $karyawan_id)
-            ->where('tanggal', $today)
-            ->first();
-    
-        if (!$absen) {
-            $absen = new Absen();
-            $absen->karyawan_id = $karyawan_id;
-            $absen->tanggal = $today;
-            $absen->jam_masuk = Carbon::now();
-
-
-
-            // $absen->jam_masuk = Carbon::now()->subHours(1);
-            $message = 'Presensi masuk berhasil dicatat';
-            $type = 'check_in';
-            $time = $absen->jam_masuk;
-        } elseif (!$absen->jam_keluar) {
-            $absen->jam_keluar = Carbon::now();
-
-
-
-            // $absen->jam_keluar = Carbon::now()->subHours(1);
-            $message = 'Presensi pulang berhasil dicatat';
-            $type = 'check_out';
-            $time = $absen->jam_keluar;
-        } else {
-            // Jika sudah ada jam_masuk dan jam_keluar
-            return response()->json([
-                'status' => 'info',
-                'message' => 'Anda sudah presensi hari ini!',
-                'data' => [
-                    'check_in' => $absen->jam_masuk,
-                    'check_out' => $absen->jam_keluar,
-                ],
-            ], 500);
-        }
-    
-        // Simpan data baru atau update data lama
-        $absen->save();
-    
-        return response()->json([
-            'status' => 'success',
-            'message' => $message,
-            'data' => [
-                'type' => $type,
-                'time' => $time,
-            ],
-        ], 200);
-    }    
-    
 
     // Face add (from filament)
     public function saveFaceVector($imagePath, $id)
@@ -131,42 +112,29 @@ class FaceRecognitionController extends Controller
         Log::info('saveFaceVector method called.');
         Log::info('Karyawan ID: ' . $id);
         Log::info('Image path: ' . $imagePath);
-    
+
         // Fetch Karyawan record
         $karyawan = Karyawan::findOrFail($id);
         Log::info('Karyawan found: ' . $karyawan->id);
-    
-        try {
-            // Convert the face to a vector
-            $faceVector = $this->convertFaceToVector($imagePath);
-            if ($faceVector === null) {
-                // Jika gagal memproses wajah
-                throw new \Exception('Face processing failed or no valid face vector returned.');
-            }
-    
-            // Save the face vector to the database
-            $this->saveFaceVectorToDatabase($karyawan, $faceVector);
-    
-            // Hapus file foto setelah berhasil
-            $this->deleteImage($imagePath);
-    
-            return response()->json([
-                'status' => 'success',
-                'message' => 'Face vector successfully saved to the database.',
-            ]);
-        } catch (\Exception $e) {
-            // Log error
-            Log::error('Error during face vector saving: ' . $e->getMessage());
-    
-            // Hapus file foto jika gagal
-            $this->deleteImage($imagePath);
-    
+
+        // Convert the face to a vector
+        $faceVector = $this->convertFaceToVector($imagePath);
+        if ($faceVector === null) {
             return response()->json([
                 'status' => 'error',
-                'message' => $e->getMessage(),
+                'message' => 'Face processing failed or no valid face vector returned.',
             ], 500);
         }
+
+        // Save the face vector to the database
+        $this->saveFaceVectorToDatabase($karyawan, $faceVector);
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Face vector successfully saved to the database.',
+        ]);
     }
+
     private function convertFaceToVector($imagePath)
     {
         // Path to the Python script
@@ -176,6 +144,7 @@ class FaceRecognitionController extends Controller
         // Build the command
         $command = ["python3", $pythonScriptPath, $imagePath];
         Log::info('Command to execute: ' . implode(' ', $command));
+
         // Prepare descriptors for stdout and stderr
         $descriptors = [
             1 => ['pipe', 'w'], // stdout
@@ -227,19 +196,5 @@ class FaceRecognitionController extends Controller
         $karyawan->face_vector = json_encode($faceVector);
         $karyawan->save();
         Log::info('Face vector saved successfully.');
-    }
-
-    private function deleteImage($imagePath)
-    {
-        try {
-            if (file_exists($imagePath)) {
-                unlink($imagePath);
-                Log::info('Image deleted: ' . $imagePath);
-            } else {
-                Log::warning('Image not found for deletion: ' . $imagePath);
-            }
-        } catch (\Exception $e) {
-            Log::error('Error deleting image: ' . $e->getMessage());
-        }
     }
 }
