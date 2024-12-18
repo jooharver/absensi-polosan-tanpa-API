@@ -15,7 +15,7 @@ class ThrPolicy
      */
     public function viewAny(User $user)
     {
-        if($user->hasRoles('Super Admin')){
+        if($user->hasRole('Super Admin')){
             return true;
         }
         return false;
